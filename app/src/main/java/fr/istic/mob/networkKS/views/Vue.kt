@@ -13,7 +13,7 @@ import fr.istic.mob.networkKS.R
 /**
  * TODO: document your custom view class.
  */
-class View : View {
+class Vue : View {
 
     private var _exampleString: String? = null // TODO: use a default from R.string...
     private var _exampleColor: Int = Color.RED // TODO: use a default from R.color...

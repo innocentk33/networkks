@@ -3,7 +3,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-    <fr.istic.mob.networkKS.views.View
+    <fr.istic.mob.networkKS.views.Vue
         style="@style/Widget.Theme.NetworkKacouSeh.MyView"
         android:layout_width="300dp"
         android:layout_height="300dp"
