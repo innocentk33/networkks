@@ -20,9 +20,10 @@
         android:theme="?attr/actionBarTheme"
         app:layout_constraintTop_toTopOf="parent"
         />
-    <LinearLayout
+
+    <FrameLayout
+        android:id="@+id/drawZone"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        android:background="@drawable/plan" />
+        android:background="@drawable/plan"/>
 </LinearLayout>

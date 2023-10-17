@@ -1,4 +1,4 @@
-package fr.istic.mob.networkKS.data
+package fr.istic.mob.networkKS.models
 
 data class Graph(
     var description:String,
