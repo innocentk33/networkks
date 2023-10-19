@@ -17,26 +17,19 @@ import androidx.core.content.ContextCompat
 
 class MainActivity : AppCompatActivity() {
 
-    lateinit var vue : VueGenerale //Graph est la vue qui doit etre afficher
+
     lateinit var graph : DrawEngine //moteur de dessin
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        vue = VueGenerale(this,null,0,0)
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
-        setSupportActionBar(toolbar)
-        //setContentView(myview(this));s
-        //setBackground(context.getResources().getDrawable(R.drawable.roundbg));
-        vue.background = ContextCompat.getDrawable(applicationContext,R.drawable.plan)
-        //setContentView(vue)
-        //Creer un menu pour cette vue (ajout, connexion, edition)
-
+        setSupportActionBar(toolbar) //ajout de la toolbar
         val drawZone = findViewById<FrameLayout>(R.id.drawZone)
         graph = DrawEngine(this,null,0)
         drawZone.addView(graph)
 
-
     }
+
 
    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
           //Ajout des elements au menu
@@ -45,23 +38,13 @@ class MainActivity : AppCompatActivity() {
           return super.onCreateOptionsMenu(menu)
       }
 
-
-    internal class myview(context: Context?) : View(context) {
-        override fun onDraw(canvas: Canvas) {
-            super.onDraw(canvas)
-            val x = 800
-            val y = 80
-            val radius = 40
-            val paint = Paint()
-            // Use Color.parseColor to define HTML colors
-            paint.color = Color.parseColor("#CD5C5C")
-            canvas.drawCircle(x.toFloat(), y.toFloat(), radius.toFloat(), paint)
-        }
-    }
-
-
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return  when (item.itemId) {
+            R.id.mode_reset->{
+                this.recreate()
+                Toast.makeText(this,"Reseau Reinitialisé", Toast.LENGTH_SHORT).show()
+                true
+            }
             R.id.mode_add -> {
                 //modeAdd()
                 Toast.makeText(this,"Mode Ajout", Toast.LENGTH_SHORT).show()
@@ -80,4 +63,5 @@ class MainActivity : AppCompatActivity() {
             else -> super.onOptionsItemSelected(item)
         }
     }
+
 }
