@@ -1,8 +1,11 @@
 package fr.istic.mob.networkKS.models
 
+import fr.istic.mob.networkKS.Connexion
+
 data class Graph(
-    var description:String,
-    var couleur :String,
-    //var noeud:(position X,Y)
-    //arc (noeud depart , noeud arrivée
+
+    var objets: MutableList<Objet> = mutableListOf(),
+    var connexions: MutableList<Connexion> = mutableListOf(),
+
+
 )

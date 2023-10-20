@@ -7,20 +7,14 @@
     android:orientation="vertical"
     tools:context=".MainActivity"
     >
-
-
-
-
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:theme="?attr/actionBarTheme"
         android:background="?attr/colorPrimary"
         android:minHeight="?attr/actionBarSize"
-        android:theme="?attr/actionBarTheme"
-        app:layout_constraintTop_toTopOf="parent"
         />
-
     <FrameLayout
         android:id="@+id/drawZone"
         android:layout_width="match_parent"

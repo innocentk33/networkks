@@ -26,7 +26,9 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(toolbar) //ajout de la toolbar
         val drawZone = findViewById<FrameLayout>(R.id.drawZone)
         graph = DrawEngine(this,null,0)
-       drawZone.addView(graph)
+        graph.mode = Mode.MOVE
+        drawZone.addView(graph)
+
 
     }
 
@@ -46,12 +48,13 @@ class MainActivity : AppCompatActivity() {
                 true
             }
             R.id.mode_add -> {
-                //modeAdd()
+                graph.mode = Mode.ADD
                 Toast.makeText(this,"Mode Ajout", Toast.LENGTH_SHORT).show()
                 true
             }
             R.id.mode_connect -> {
                // modeConnexion()
+                graph.mode = Mode.CONNECT
                 Toast.makeText(this,"Mode Connexion", Toast.LENGTH_SHORT).show()
                 true
             }
