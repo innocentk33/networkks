@@ -3,15 +3,13 @@ package fr.istic.mob.networkKS
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.PointF
-import android.graphics.RectF
 import android.util.AttributeSet
-import android.util.Log
 import android.view.MotionEvent
 import android.view.View
 import fr.istic.mob.networkKS.models.Graph
 import fr.istic.mob.networkKS.models.Objet
 
-class DrawEngine(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) :
+class DrawZone(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) :
     View(context, attrs, defStyleAttr) {
     /*
         val paint = Paint() // permet de dessiner des formes
@@ -23,7 +21,6 @@ class DrawEngine(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) :
         private var rectangles = ArrayList<RectF>()
     */
     private var objet = Objet()
-   // private var objets = ArrayList<Objet>()
     var mode = Mode.MOVE
     private var isDragging = false
     private val tempLineStart = PointF()
@@ -47,81 +44,33 @@ class DrawEngine(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) :
         if (graph.objets.isNotEmpty()){
             for (obj in graph.objets){
                 canvas.drawRoundRect(obj.rect, Objet.cornerRadius, Objet.cornerRadius, Objet.paint)
+                // dessiner le label
+                canvas.drawText(obj.label, obj.rect.centerX(), obj.position.y + Objet.labelPositionY, Objet.labelStyle)
             }
         }
-        if (graph.connexion.isNotEmpty()){
-            for (cnn in graph.connexion){
-                canvas.drawLine(cnn.startConnexion.x, cnn.startConnexion.y, cnn.endConnexion.x, cnn.endConnexion.y, cnn.color)
-            }
-        }
-
 
     }
+
 
 
     override fun onTouchEvent(event: MotionEvent?): Boolean {
         // dessiner en fonction du mode de dessin
         if (mode == Mode.ADD) {
-            drawObject(event)
+            graph.objets.add(objet.createObjetAtPosition(event))
+
         } else if (mode == Mode.CONNECT) {
             drawConnexion(event)
         }
-        /*      //desine un rectangle arrondi a la position du doigt quand on touche l'ecran dans la drawZone
-              if (event != null) {
-                  if (event.action == MotionEvent.ACTION_DOWN) {
-                      val newObjet = Objet()
-                      val newPositionx = event.x
-                      val newPositiony = event.y
-                      val newRect = RectF(newPositionx, newPositiony, newPositionx + Objet.rectWidth, newPositiony + Objet.rectHeight)
-                      // rect.set(position.x, position.y, position.x + rectWidth, position.y + rectHeight)
-                      newObjet.rect = newRect
-                      objets.add(newObjet)
-                      Log.d("Objets : = ", objets.toString())
-                      invalidate()
-                  }
-              }*/
+        invalidate()
         return super.onTouchEvent(event)
     }
 
     private fun drawConnexion(event: MotionEvent?) {
        // TODO("a faire"
-        val connexion = Connexion()
-        if (event != null) {
-            when (event.action) {
-                MotionEvent.ACTION_DOWN -> {
-                    tempLineStart.x = event.x
-                    tempLineStart.y = event.y
-                    tempLineEnd.x = event.x
-                    tempLineEnd.y = event.y
-                    isDragging = true
-                }
-                MotionEvent.ACTION_MOVE -> {
-                    if (isDragging) {
-                        tempLineEnd.x = event.x
-                        tempLineEnd.y = event.y
-                        invalidate()
-                    }
-                }
-                MotionEvent.ACTION_UP -> {
-                    if (isDragging) {
-                        tempLineEnd.x = event.x
-                        tempLineEnd.y = event.y
-                        isDragging = false
-                        val cnn = Connexion()
-             /*           cnn.startPoint = tempLineStart
-                        cnn.endPoint = tempLineEnd
-                        cnn.color = Objet.paint
-                        cnn.labelColor = Objet.paint
-                        cnn.label = "Connexion"*/
-                        graph.connexion.add(cnn)
-                        invalidate()
-                    }
-                }
-            }
-        }
+
     }
 
-    private fun drawObject(event: MotionEvent?) {
+/*    private fun drawObject(event: MotionEvent?) {
         if (event != null) {
             if (event.action == MotionEvent.ACTION_DOWN) {
                 val newObjet = Objet()
@@ -136,7 +85,29 @@ class DrawEngine(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) :
                 invalidate()
             }
         }
+    }*/
+     fun createConnection(start: Objet, end: Objet) {
+        // Créez une connexion entre les objets avec une ligne droite
+        val connexion = Connexion()
+        connexion.startObjet = start
+        connexion.endObjet = end
+        // Calculez les coordonnées de début et de fin de la ligne droite
+        connexion.startConnexion = PointF(start.position.x + Objet.rectWidth / 2, start.position.y + Objet.rectHeight / 2)
+        connexion.endConnexion = PointF(end.position.x + Objet.rectWidth / 2, end.position.y + Objet.rectHeight / 2)
+        // Ajoutez la connexion à la liste des connexions de votre modèle
+        graph.connexions.add(connexion)
     }
+     fun findObjectAtPoint(x: Float, y: Float): Objet? {
+        // Parcourez la liste d'objets et renvoyez l'objet qui contient les coordonnées (x, y)
+        for (objet in graph.objets) {
+            if (objet.rect.contains(x, y)) {
+                return objet
+            }
+        }
+        return null
+    }
+
+
 
     // permet de vide la liste rectangles et de redessiner la vue
     /*    fun clearRectangles(){
