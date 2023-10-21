@@ -12,6 +12,21 @@ class Objet {
     // description de companion object: https://kotlinlang.org/docs/reference/object-declarations.html#companion-objects
     //Creer des objets statiques qui appartiennent a la class elle meme et non aux instance de la classe
     companion object {
+        fun createConnection(start: Objet, end: Objet): Connexion {
+            // Créez une connexion entre les objets avec une ligne droite
+            val connexion = Connexion()
+            connexion.startObjet = start
+            connexion.endObjet = end
+            // Calculez les coordonnées de début et de fin de la ligne droite
+            connexion.startConnexion = PointF(start.position.x + Objet.rectWidth / 2, start.position.y + Objet.rectHeight / 2)
+            connexion.endConnexion = PointF(end.position.x + Objet.rectWidth / 2, end.position.y + Objet.rectHeight / 2)
+            // Ajoutez la connexion à la liste des connexions de votre modèle
+            start.connexions.add(connexion)
+            end.connexions.add(connexion)
+            return connexion
+        }
+
+
         val paint = Paint() // permet de dessiner des formes
         const val cornerRadius = 10f // Rayon des coins en pixels
         const val rectWidth = 150f
@@ -48,19 +63,6 @@ class Objet {
         // dessine tous les rectangles arrondis de la liste rectangles
         drawZone?.invalidate()
     }
-    //dessiner un objet sur la vue
-/*    fun drawObjet(event: MotionEvent?){
-        if (event != null) {
-            if(event.action == MotionEvent.ACTION_DOWN) {
-                position = PointF(event.x,event.y)
-                rect = RectF(position.x, position.y, position.x + rectWidth, position.y + rectHeight)
-                label = "Objet"
-                drawEngine?.graph?.objets?.add(this)
-                drawEngine?.invalidate()
-                drawEngine?.toDraw = ""
-            }
-        }
-    }*/
 
     fun createObjetAtPosition(event: MotionEvent?) :Objet{
             val newObjet = Objet()
@@ -85,22 +87,5 @@ class Objet {
         }
         return newObjet
     }
-    /*    private fun drawObject(event: MotionEvent?) {
-        if (event != null) {
-            if (event.action == MotionEvent.ACTION_DOWN) {
-                val newObjet = Objet()
-                val newPositionX = event.x
-                val newPositionY = event.y
-                newObjet.position = PointF(newPositionX, newPositionY)
-                val newRect = RectF(newPositionX, newPositionY, newPositionX + Objet.rectWidth, newPositionY + Objet.rectHeight)
-                newObjet.rect = newRect
-                graph.objets.add(newObjet)
-               // objets.add(newObjet)
-                Log.d("Objets : = ", graph.objets.toString())
-                invalidate()
-            }
-        }
-    }*/
-
 
 }

@@ -29,9 +29,6 @@ class MainActivity : AppCompatActivity() {
         this.drawZone = DrawZone(this)
         this.drawZone.mode = Mode.MOVE
         drawView.addView(this.drawZone)
-  /*      this.drawZone.setOnLongClickListener { _ ->
-            Toast.makeText(this, "Long click", Toast.LENGTH_SHORT).show()
-            true }*/
 
     }
 

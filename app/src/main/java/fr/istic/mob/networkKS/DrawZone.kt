@@ -2,6 +2,8 @@ package fr.istic.mob.networkKS
 
 import android.content.Context
 import android.graphics.Canvas
+import android.graphics.Paint
+import android.graphics.Path
 import android.graphics.PointF
 import android.graphics.RectF
 import android.util.AttributeSet
@@ -20,24 +22,23 @@ import kotlin.math.log
 //ajouter un gestur detector pour detecter les gestes de l'utilisateur
 
 class DrawZone(context: Context) : View(context), GestureDetector.OnGestureListener{
-    /*
-        val paint = Paint() // permet de dessiner des formes
-        var rect = RectF() // permet de dessiner un rectangle arrondi avec drawRoundRect a la position top, left, right, bottom
-        var position = PointF() // permet de dessiner un rectangle arrondi a la position x,y
-        private val cornerRadius = 10f // Rayon des coins en pixels
-        private val rectWidth = 150f
-        private val rectHeight = 100f
-        private var rectangles = ArrayList<RectF>()
-    */
     private var objet = Objet()
     var mode = Mode.MOVE
     private var isDragging = false
     private val tempLineStart = PointF()
     private val tempLineEnd = PointF()
     private var graph = Graph()
-
+    private var connectionMode = false
+    private var startObject: Objet? = null
+    private var endObject: Objet? = null
+    private val tempPath = Path()
     //private val gestureDetector = GestureDetectorCompat()
     private val gestureDetector = GestureDetectorCompat(context, this)
+    private val connectionPaint = Paint().apply {
+        color = android.graphics.Color.BLUE
+        style = Paint.Style.STROKE
+        strokeWidth = 10f
+    }
 
     init {
 
@@ -51,19 +52,40 @@ class DrawZone(context: Context) : View(context), GestureDetector.OnGestureListe
                 // dessiner le label
                 canvas.drawText(obj.label, obj.rect.centerX(), obj.position.y + Objet.labelPositionY, Objet.labelStyle)
             }
+            // Dessiner les connexions existantes
+            for (connexion in graph.connexions) {
+                canvas.drawLine(
+                    connexion.startConnexion.x, connexion.startConnexion.y,
+                    connexion.endConnexion.x, connexion.endConnexion.y,
+                    connectionPaint
+                )
+            }
+            // Dessiner la connexion temporaire
+            if (connectionMode) {
+                canvas.drawLine(
+                    tempLineStart.x, tempLineStart.y,
+                    tempLineEnd.x, tempLineEnd.y,
+                    connectionPaint
+                )
+            }
         }
+
     }
 
 
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
-
-
         if (gestureDetector.onTouchEvent(event)) {
-            return true // L'appui a été géré par le GestureDetector
+            return true // si le geste est detecté on retourne true
+        }else {
+                  if(event.action == MotionEvent.ACTION_DOWN){
+                      Log.d("OnTouchEvent","OnTouchEvent")
+
+                  }
+            return  false
         }
 
-        return false
+
     }
 
     private fun drawConnexion(event: MotionEvent?) {
@@ -71,23 +93,7 @@ class DrawZone(context: Context) : View(context), GestureDetector.OnGestureListe
 
     }
 
-/*    private fun drawObject(event: MotionEvent?) {
-        if (event != null) {
-            if (event.action == MotionEvent.ACTION_DOWN) {
-                val newObjet = Objet()
-                val newPositionX = event.x
-                val newPositionY = event.y
-                newObjet.position = PointF(newPositionX, newPositionY)
-                val newRect = RectF(newPositionX, newPositionY, newPositionX + Objet.rectWidth, newPositionY + Objet.rectHeight)
-                newObjet.rect = newRect
-                graph.objets.add(newObjet)
-               // objets.add(newObjet)
-                Log.d("Objets : = ", graph.objets.toString())
-                invalidate()
-            }
-        }
-    }*/
-     fun createConnection(start: Objet, end: Objet) {
+/*     fun createConnection(start: Objet, end: Objet) {
         // Créez une connexion entre les objets avec une ligne droite
         val connexion = Connexion()
         connexion.startObjet = start
@@ -97,9 +103,17 @@ class DrawZone(context: Context) : View(context), GestureDetector.OnGestureListe
         connexion.endConnexion = PointF(end.position.x + Objet.rectWidth / 2, end.position.y + Objet.rectHeight / 2)
         // Ajoutez la connexion à la liste des connexions de votre modèle
         graph.connexions.add(connexion)
+    }*/
+
+    private fun createConnection(start: Objet?, end: Objet?) {
+        if (start != null && end != null) {
+            val connection = Objet.createConnection(start, end)
+            graph.connexions.add(connection)
+            invalidate()
+        }
     }
-     fun findObjectAtPoint(x: Float, y: Float): Objet? {
-        // Parcourez la liste d'objets et renvoyez l'objet qui contient les coordonnées (x, y)
+
+    private fun findObjectAtPoint(x: Float, y: Float): Objet? {
         for (objet in graph.objets) {
             if (objet.rect.contains(x, y)) {
                 return objet
@@ -109,24 +123,24 @@ class DrawZone(context: Context) : View(context), GestureDetector.OnGestureListe
     }
 
     override fun onDown(p0: MotionEvent): Boolean {
-        Log.d("OnDown","OnDown")
+       // Log.d("OnDown","OnDown")
         return true
     }
 
     override fun onShowPress(p0: MotionEvent) {
         //TODO("Not yet implemented")
-        Log.d("OnShowPress","OnShowPress")
+      //  Log.d("OnShowPress","OnShowPress")
     }
 
     override fun onSingleTapUp(p0: MotionEvent): Boolean {
         //TODO("Not yet implemented")
-        Log.d("OnSingleTapUp","OnSingleTapUp")
+        //Log.d("OnSingleTapUp","OnSingleTapUp")
         return true
     }
 
     override fun onScroll(p0: MotionEvent, p1: MotionEvent, p2: Float, p3: Float): Boolean {
        // TODO("Not yet implemented")
-        Log.d("OnScroll","OnScroll")
+       // Log.d("OnScroll","OnScroll")
         return true
     }
 
@@ -152,18 +166,9 @@ class DrawZone(context: Context) : View(context), GestureDetector.OnGestureListe
 
     override fun onFling(p0: MotionEvent, p1: MotionEvent, p2: Float, p3: Float): Boolean {
        // TODO("Not yet implemented")
-        Log.d("OnFling","OnFling")
+        //Log.d("OnFling","OnFling")
         return true
     }
-
-
-    // permet de vide la liste rectangles et de redessiner la vue
-    /*    fun clearRectangles(){
-            rectangles.clear()
-            invalidate()
-        }*/
-
-
 
 
 }
