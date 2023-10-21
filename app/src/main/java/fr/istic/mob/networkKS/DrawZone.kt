@@ -3,14 +3,23 @@ package fr.istic.mob.networkKS
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.PointF
+import android.graphics.RectF
 import android.util.AttributeSet
+import android.util.Log
+import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
+import android.widget.EditText
+import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
+import androidx.core.view.GestureDetectorCompat
 import fr.istic.mob.networkKS.models.Graph
 import fr.istic.mob.networkKS.models.Objet
+import kotlin.math.log
 
-class DrawZone(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) :
-    View(context, attrs, defStyleAttr) {
+//ajouter un gestur detector pour detecter les gestes de l'utilisateur
+
+class DrawZone(context: Context) : View(context), GestureDetector.OnGestureListener{
     /*
         val paint = Paint() // permet de dessiner des formes
         var rect = RectF() // permet de dessiner un rectangle arrondi avec drawRoundRect a la position top, left, right, bottom
@@ -27,20 +36,15 @@ class DrawZone(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) :
     private val tempLineEnd = PointF()
     private var graph = Graph()
 
+    //private val gestureDetector = GestureDetectorCompat()
+    private val gestureDetector = GestureDetectorCompat(context, this)
+
     init {
-        /* paint.color = Color.RED
-         paint.style = Paint.Style.FILL*/
+
+
     }
 
     override fun onDraw(canvas: Canvas) {
-        //Grace a cette fonction on peut dessiner sur la vue un rectangle arrondi a la position 100,100
-        // Définir le rectangle arrondi à la position spécifiée
-        // Rectangle arrondi
-        //canvas.drawRoundRect(rect, cornerRadius, cornerRadius, paint)
-        // dessine tous les rectangles arrondis de la liste rectangles
-/*        for (objet in objets) {
-            canvas.drawRoundRect(objet.rect, Objet.cornerRadius, Objet.cornerRadius, Objet.paint)
-        }*/
         if (graph.objets.isNotEmpty()){
             for (obj in graph.objets){
                 canvas.drawRoundRect(obj.rect, Objet.cornerRadius, Objet.cornerRadius, Objet.paint)
@@ -48,21 +52,18 @@ class DrawZone(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) :
                 canvas.drawText(obj.label, obj.rect.centerX(), obj.position.y + Objet.labelPositionY, Objet.labelStyle)
             }
         }
-
     }
 
 
 
-    override fun onTouchEvent(event: MotionEvent?): Boolean {
-        // dessiner en fonction du mode de dessin
-        if (mode == Mode.ADD) {
-            graph.objets.add(objet.createObjetAtPosition(event))
+    override fun onTouchEvent(event: MotionEvent): Boolean {
 
-        } else if (mode == Mode.CONNECT) {
-            drawConnexion(event)
+
+        if (gestureDetector.onTouchEvent(event)) {
+            return true // L'appui a été géré par le GestureDetector
         }
-        invalidate()
-        return super.onTouchEvent(event)
+
+        return false
     }
 
     private fun drawConnexion(event: MotionEvent?) {
@@ -107,6 +108,53 @@ class DrawZone(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) :
         return null
     }
 
+    override fun onDown(p0: MotionEvent): Boolean {
+        Log.d("OnDown","OnDown")
+        return true
+    }
+
+    override fun onShowPress(p0: MotionEvent) {
+        //TODO("Not yet implemented")
+        Log.d("OnShowPress","OnShowPress")
+    }
+
+    override fun onSingleTapUp(p0: MotionEvent): Boolean {
+        //TODO("Not yet implemented")
+        Log.d("OnSingleTapUp","OnSingleTapUp")
+        return true
+    }
+
+    override fun onScroll(p0: MotionEvent, p1: MotionEvent, p2: Float, p3: Float): Boolean {
+       // TODO("Not yet implemented")
+        Log.d("OnScroll","OnScroll")
+        return true
+    }
+
+    override fun onLongPress(p0: MotionEvent) {
+        Toast.makeText(context, "Appui long détecté", Toast.LENGTH_SHORT).show()
+        Log.d("OnLongPress","OnLongPress")
+        //afficher une boite de dialogue pour saisir le nom de l'objet
+        val alertDialog = AlertDialog.Builder(context).setTitle("Nom de l'objet").setMessage("Saisir le nom de l'objet")
+        val editText = EditText(context)
+        alertDialog.setView(editText)
+        alertDialog.setPositiveButton("Créer") { dialog, which ->
+            objet = objet.createObjetAtPositionWithLabel(p0,editText.text.toString())
+            objet.drawZone = this
+            graph.objets.add(objet)
+            invalidate()
+        }
+        alertDialog.setNegativeButton("Annuler") { dialog, which ->
+            dialog.cancel()
+        }
+        alertDialog.show()
+        Log.d("Objets : = ", graph.objets.toString())
+    }
+
+    override fun onFling(p0: MotionEvent, p1: MotionEvent, p2: Float, p3: Float): Boolean {
+       // TODO("Not yet implemented")
+        Log.d("OnFling","OnFling")
+        return true
+    }
 
 
     // permet de vide la liste rectangles et de redessiner la vue
@@ -114,5 +162,8 @@ class DrawZone(context: Context?, attrs: AttributeSet?, defStyleAttr: Int) :
             rectangles.clear()
             invalidate()
         }*/
+
+
+
 
 }

@@ -65,15 +65,25 @@ class Objet {
     fun createObjetAtPosition(event: MotionEvent?) :Objet{
             val newObjet = Objet()
         if (event != null) {
-            if (event.action == MotionEvent.ACTION_DOWN) {
                 val newPositionX = event.x
                 val newPositionY = event.y
                 newObjet.position = PointF(newPositionX, newPositionY)
                 val newRect = RectF(newPositionX, newPositionY, newPositionX + Objet.rectWidth, newPositionY + Objet.rectHeight)
                 newObjet.rect = newRect
-            }
         }
             return newObjet
+    }
+    fun createObjetAtPositionWithLabel(event: MotionEvent?,label :String) :Objet{
+        val newObjet = Objet()
+        if (event != null) {
+            val newPositionX = event.x
+            val newPositionY = event.y
+            newObjet.position = PointF(newPositionX, newPositionY)
+            val newRect = RectF(newPositionX, newPositionY, newPositionX + Objet.rectWidth, newPositionY + Objet.rectHeight)
+            newObjet.rect = newRect
+            newObjet.label = label
+        }
+        return newObjet
     }
     /*    private fun drawObject(event: MotionEvent?) {
         if (event != null) {
