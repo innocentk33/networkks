@@ -10,7 +10,7 @@ import fr.istic.mob.networkKS.DrawZone
 
 class Objet {
     // description de companion object: https://kotlinlang.org/docs/reference/object-declarations.html#companion-objects
-    //Creer des objets statiques qui appartiennent a la class elle meme et non aux instance de la classe
+    //il permet de Creer des objets statiques qui appartiennent a la class elle meme et non aux instance de la classe
     companion object {
 
         val paint = Paint() // permet de dessiner des formes
@@ -73,5 +73,6 @@ class Objet {
         }
         return newObjet
     }
+
 
 }

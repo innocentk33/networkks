@@ -32,7 +32,8 @@ class DrawZone(context: Context) : View(context), GestureDetector.OnGestureListe
     private val gestureDetector = GestureDetectorCompat(context, this)
     private var isDragging = false
     private var isCreatingConnection = false
-    private var draggingObject: Objet? = null
+    private var draggingObject = Objet()
+    private var findObjet = false
     private val connectionPaint = Paint().apply {
         color = android.graphics.Color.GREEN
         style = Paint.Style.STROKE
@@ -90,7 +91,6 @@ class DrawZone(context: Context) : View(context), GestureDetector.OnGestureListe
                         val touchedObject = findObjectAtPoint(event.x, event.y)
                         if (touchedObject !=null){
                             isCreatingConnection = true
-                            draggingObject = touchedObject
                             startObject = touchedObject
                             tempPath.reset()
                             tempPath.moveTo(touchedObject.rect.centerX(), touchedObject.rect.centerY())
@@ -118,7 +118,6 @@ class DrawZone(context: Context) : View(context), GestureDetector.OnGestureListe
                                 createConnection(startObject, endObject)
                             }
                             isCreatingConnection = false
-                            draggingObject = null
                             tempPath.reset()
                             invalidate()
                         }
@@ -130,7 +129,51 @@ class DrawZone(context: Context) : View(context), GestureDetector.OnGestureListe
 
             }
             Mode.MOVE->{
+                when (event.action) {
 
+                    MotionEvent.ACTION_DOWN -> {
+                        val touchedObject = findObjectAtPoint(event.x, event.y)
+                        if (touchedObject != null) {
+                            isDragging = true
+                            findObjet = true
+                            draggingObject = touchedObject
+                        }
+                        return true
+                    }
+                    MotionEvent.ACTION_MOVE -> {
+                        if (isDragging) {
+                            if (findObjet) {
+                                val newPositionAfterDrag = PointF(event.x, event.y)
+                                val offsetX = newPositionAfterDrag.x - draggingObject.position.x
+                                val offsetY = newPositionAfterDrag.y - draggingObject.position.y
+                                draggingObject.position = newPositionAfterDrag
+                                draggingObject.rect = RectF(
+                                    newPositionAfterDrag.x,
+                                    newPositionAfterDrag.y,
+                                    newPositionAfterDrag.x + Objet.rectWidth,
+                                    newPositionAfterDrag.y + Objet.rectHeight
+                                )
+                                for (connexion in graph.connexions) {
+                                    if (connexion.startObjet == draggingObject) {
+                                        connexion.startConnexion.offset(offsetX, offsetY)
+                                    }
+                                    if (connexion.endObjet == draggingObject) {
+                                        connexion.endConnexion.offset(offsetX, offsetY)
+                                    }
+                                }
+                                invalidate()
+                            }
+                        }
+                        return true
+                    }
+                    MotionEvent.ACTION_UP -> {
+                        isDragging = false
+                       // draggingObject = null
+                        findObjet = false
+                        startObject = null
+                        return true
+                    }
+                }
             }
 
         }
