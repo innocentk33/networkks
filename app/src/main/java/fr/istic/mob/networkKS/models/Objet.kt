@@ -12,20 +12,6 @@ class Objet {
     // description de companion object: https://kotlinlang.org/docs/reference/object-declarations.html#companion-objects
     //Creer des objets statiques qui appartiennent a la class elle meme et non aux instance de la classe
     companion object {
-        fun createConnection(start: Objet, end: Objet): Connexion {
-            // Créez une connexion entre les objets avec une ligne droite
-            val connexion = Connexion()
-            connexion.startObjet = start
-            connexion.endObjet = end
-            // Calculez les coordonnées de début et de fin de la ligne droite
-            connexion.startConnexion = PointF(start.position.x + Objet.rectWidth / 2, start.position.y + Objet.rectHeight / 2)
-            connexion.endConnexion = PointF(end.position.x + Objet.rectWidth / 2, end.position.y + Objet.rectHeight / 2)
-            // Ajoutez la connexion à la liste des connexions de votre modèle
-            start.connexions.add(connexion)
-            end.connexions.add(connexion)
-            return connexion
-        }
-
 
         val paint = Paint() // permet de dessiner des formes
         const val cornerRadius = 10f // Rayon des coins en pixels

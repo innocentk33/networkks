@@ -24,22 +24,21 @@ import kotlin.math.log
 class DrawZone(context: Context) : View(context), GestureDetector.OnGestureListener{
     private var objet = Objet()
     var mode = Mode.MOVE
-    private var isDragging = false
-    private val tempLineStart = PointF()
-    private val tempLineEnd = PointF()
     private var graph = Graph()
     private var connectionMode = false
     private var startObject: Objet? = null
     private var endObject: Objet? = null
     private val tempPath = Path()
-    //private val gestureDetector = GestureDetectorCompat()
     private val gestureDetector = GestureDetectorCompat(context, this)
+    private var isDragging = false
+    private var isCreatingConnection = false
+    private var draggingObject: Objet? = null
     private val connectionPaint = Paint().apply {
-        color = android.graphics.Color.BLUE
+        color = android.graphics.Color.GREEN
         style = Paint.Style.STROKE
         strokeWidth = 10f
     }
-
+    private var connexion = Connexion()
     init {
 
 
@@ -57,17 +56,14 @@ class DrawZone(context: Context) : View(context), GestureDetector.OnGestureListe
                 canvas.drawLine(
                     connexion.startConnexion.x, connexion.startConnexion.y,
                     connexion.endConnexion.x, connexion.endConnexion.y,
-                    connectionPaint
+                    connexion.connectionPaint
                 )
             }
-            // Dessiner la connexion temporaire
-            if (connectionMode) {
-                canvas.drawLine(
-                    tempLineStart.x, tempLineStart.y,
-                    tempLineEnd.x, tempLineEnd.y,
-                    connectionPaint
-                )
+            if (isCreatingConnection) {
+                // Dessinez la connexion temporaire
+                canvas.drawPath(tempPath, Connexion.tempConnexionPaint)
             }
+
         }
 
     }
@@ -75,39 +71,75 @@ class DrawZone(context: Context) : View(context), GestureDetector.OnGestureListe
 
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
-        if (gestureDetector.onTouchEvent(event)) {
-            return true // si le geste est detecté on retourne true
-        }else {
-                  if(event.action == MotionEvent.ACTION_DOWN){
-                      Log.d("OnTouchEvent","OnTouchEvent")
+        // Faire un when sur le mode
+        when (mode){
+            Mode.ADD->{
+                if (gestureDetector.onTouchEvent(event)) {
+                    return true // si le geste est detecté on retourne true
+                }
+            }
+            Mode.EDIT->{
 
-                  }
-            return  false
+            }
+            Mode.CONNECT->{
+            Log.d("mode connexion",mode.name.toString())
+                when (event.action) {
+                    MotionEvent.ACTION_DOWN -> {
+                        Log.d("action","action down")
+                        //verifier si l'objet est selectionné
+                        val touchedObject = findObjectAtPoint(event.x, event.y)
+                        if (touchedObject !=null){
+                            isCreatingConnection = true
+                            draggingObject = touchedObject
+                            startObject = touchedObject
+                            tempPath.reset()
+                            tempPath.moveTo(touchedObject.rect.centerX(), touchedObject.rect.centerY())
+                        }
+                        return true
+
+                    }
+                    MotionEvent.ACTION_MOVE -> {
+                        Log.d("action","action move")
+                        if (isCreatingConnection) {
+                            // Mettez à jour le chemin temporaire à chaque mouvement du doigt
+                            tempPath.lineTo(event.x, event.y)
+                            invalidate()
+                        }
+                        return true
+
+                    }
+                    MotionEvent.ACTION_UP -> {
+                        Log.d("action","action up")
+                        if (isCreatingConnection) {
+                            // Vérifiez si le doigt est relâché sur un autre objet
+                            val endObject = findObjectAtPoint(event.x, event.y)
+                            if (endObject != null && endObject != startObject) {
+                                // Créez la connexion entre les deux objets
+                                createConnection(startObject, endObject)
+                            }
+                            isCreatingConnection = false
+                            draggingObject = null
+                            tempPath.reset()
+                            invalidate()
+                        }
+                        return true
+
+                    }
+                }
+
+
+            }
+            Mode.MOVE->{
+
+            }
+
         }
-
-
+        return super.onTouchEvent(event)
     }
-
-    private fun drawConnexion(event: MotionEvent?) {
-       // TODO("a faire"
-
-    }
-
-/*     fun createConnection(start: Objet, end: Objet) {
-        // Créez une connexion entre les objets avec une ligne droite
-        val connexion = Connexion()
-        connexion.startObjet = start
-        connexion.endObjet = end
-        // Calculez les coordonnées de début et de fin de la ligne droite
-        connexion.startConnexion = PointF(start.position.x + Objet.rectWidth / 2, start.position.y + Objet.rectHeight / 2)
-        connexion.endConnexion = PointF(end.position.x + Objet.rectWidth / 2, end.position.y + Objet.rectHeight / 2)
-        // Ajoutez la connexion à la liste des connexions de votre modèle
-        graph.connexions.add(connexion)
-    }*/
 
     private fun createConnection(start: Objet?, end: Objet?) {
         if (start != null && end != null) {
-            val connection = Objet.createConnection(start, end)
+            val connection = connexion.createConnection(start,end)
             graph.connexions.add(connection)
             invalidate()
         }
@@ -134,13 +166,13 @@ class DrawZone(context: Context) : View(context), GestureDetector.OnGestureListe
 
     override fun onSingleTapUp(p0: MotionEvent): Boolean {
         //TODO("Not yet implemented")
-        //Log.d("OnSingleTapUp","OnSingleTapUp")
+        Log.d("OnSingleTapUp","OnSingleTapUp")
         return true
     }
 
     override fun onScroll(p0: MotionEvent, p1: MotionEvent, p2: Float, p3: Float): Boolean {
        // TODO("Not yet implemented")
-       // Log.d("OnScroll","OnScroll")
+        Log.d("OnScroll","OnScroll")
         return true
     }
 
@@ -166,7 +198,7 @@ class DrawZone(context: Context) : View(context), GestureDetector.OnGestureListe
 
     override fun onFling(p0: MotionEvent, p1: MotionEvent, p2: Float, p3: Float): Boolean {
        // TODO("Not yet implemented")
-        //Log.d("OnFling","OnFling")
+        Log.d("OnFling","OnFling")
         return true
     }
 

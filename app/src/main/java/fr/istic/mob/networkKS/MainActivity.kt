@@ -63,6 +63,11 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(this,"Mode Edition", Toast.LENGTH_SHORT).show()
                 true
             }
+            R.id.mode_move->{
+                drawZone.mode = Mode.MOVE
+                Toast.makeText(this,"Mode Deplacement", Toast.LENGTH_SHORT).show()
+                true
+            }
             else -> super.onOptionsItemSelected(item)
         }
     }
