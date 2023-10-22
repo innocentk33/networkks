@@ -25,20 +25,13 @@ class DrawZone(context: Context) : View(context), GestureDetector.OnGestureListe
     private var objet = Objet()
     var mode = Mode.MOVE
     private var graph = Graph()
-    private var connectionMode = false
     private var startObject: Objet? = null
-    private var endObject: Objet? = null
     private val tempPath = Path()
     private val gestureDetector = GestureDetectorCompat(context, this)
     private var isDragging = false
     private var isCreatingConnection = false
     private var draggingObject = Objet()
     private var findObjet = false
-    private val connectionPaint = Paint().apply {
-        color = android.graphics.Color.GREEN
-        style = Paint.Style.STROKE
-        strokeWidth = 10f
-    }
     private var connexion = Connexion()
     init {
 
