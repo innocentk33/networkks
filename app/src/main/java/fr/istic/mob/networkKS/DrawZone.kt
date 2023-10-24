@@ -149,14 +149,21 @@ class DrawZone(context: Context) : View(context), GestureDetector.OnGestureListe
                                 //limiter la zone de deplacement des objets dans le frameLayout
                                 if (newPositionAfterDrag.y <0) {
                                     newPositionAfterDrag.y = 0f
-
                                 }
+                                //limiter la zone de deplacement des objets dans le frameLayout petite condition magique
                                 if (newPositionAfterDrag.y >= (drawZoneHeight - Objet.rectHeight - (Objet.labelPositionY - Objet.rectHeight))){
                                     newPositionAfterDrag.y = drawZoneHeight - Objet.rectHeight - (Objet.labelPositionY - Objet.rectHeight)
                                 }
-                                Log.d("INNO : y", newPositionAfterDrag.y.toString())
+                                //deuxieme petite condition magique
+                                if (newPositionAfterDrag.x >= (drawZoneWidth - Objet.rectWidth)){
+                                    newPositionAfterDrag.x = drawZoneWidth - Objet.rectWidth
+                                }
+                                if (newPositionAfterDrag.x <0){
+                                    newPositionAfterDrag.x = 0f
+                                }
+                                Log.d("INNO : X", newPositionAfterDrag.x.toString())
 
-                                Log.d("INNO : drawZoneHeight", drawZoneHeight.toString())
+                                Log.d("INNO : drawZoneHeight", drawZoneWidth.toString())
                                 val offsetX = newPositionAfterDrag.x - draggingObject.position.x
                                 val offsetY = newPositionAfterDrag.y - draggingObject.position.y
                                 draggingObject.position = newPositionAfterDrag
