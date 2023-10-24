@@ -12,8 +12,10 @@ import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
 import android.widget.EditText
+import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GestureDetectorCompat
 import fr.istic.mob.networkKS.models.Graph
 import fr.istic.mob.networkKS.models.Objet
@@ -33,12 +35,17 @@ class DrawZone(context: Context) : View(context), GestureDetector.OnGestureListe
     private var draggingObject = Objet()
     private var findObjet = false
     private var connexion = Connexion()
+
+    private var toolbarHeight = 100f
     init {
 
 
     }
 
     override fun onDraw(canvas: Canvas) {
+         val drawZoneHeight = height.toFloat() -100f // la hauteur de la zone de dessin - la hauteur de la toolbar
+         val drawZoneWidth = width.toFloat()
+        Log.d("drawZone :",drawZoneWidth.toString())
         if (graph.objets.isNotEmpty()){
             for (obj in graph.objets){
                 canvas.drawRoundRect(obj.rect, Objet.cornerRadius, Objet.cornerRadius, Objet.paint)
@@ -94,7 +101,7 @@ class DrawZone(context: Context) : View(context), GestureDetector.OnGestureListe
                     MotionEvent.ACTION_MOVE -> {
                         Log.d("action","action move")
                         if (isCreatingConnection) {
-                            // Mettez à jour le chemin temporaire à chaque mouvement du doigt
+                            // ici je met à jour le chemin temporaire à chaque mouvement du doigt
                             tempPath.lineTo(event.x, event.y)
                             invalidate()
                         }
@@ -134,9 +141,22 @@ class DrawZone(context: Context) : View(context), GestureDetector.OnGestureListe
                         return true
                     }
                     MotionEvent.ACTION_MOVE -> {
+                        val drawZoneHeight = height.toFloat() // la hauteur de la zone de dessin - la hauteur de la toolbar
+                        val drawZoneWidth = width.toFloat()
                         if (isDragging) {
                             if (findObjet) {
                                 val newPositionAfterDrag = PointF(event.x, event.y)
+                                //limiter la zone de deplacement des objets dans le frameLayout
+                                if (newPositionAfterDrag.y <0) {
+                                    newPositionAfterDrag.y = 0f
+
+                                }
+                                if (newPositionAfterDrag.y >= (drawZoneHeight - Objet.rectHeight - (Objet.labelPositionY - Objet.rectHeight))){
+                                    newPositionAfterDrag.y = drawZoneHeight - Objet.rectHeight - (Objet.labelPositionY - Objet.rectHeight)
+                                }
+                                Log.d("INNO : y", newPositionAfterDrag.y.toString())
+
+                                Log.d("INNO : drawZoneHeight", drawZoneHeight.toString())
                                 val offsetX = newPositionAfterDrag.x - draggingObject.position.x
                                 val offsetY = newPositionAfterDrag.y - draggingObject.position.y
                                 draggingObject.position = newPositionAfterDrag
@@ -225,7 +245,7 @@ class DrawZone(context: Context) : View(context), GestureDetector.OnGestureListe
             graph.objets.add(objet)
             invalidate()
         }
-        alertDialog.setNegativeButton("Annuler") { dialog, which ->
+        alertDialog.setNegativeButton(R.string.alerteDialog_cancel) { dialog, which ->
             dialog.cancel()
         }
         alertDialog.show()
