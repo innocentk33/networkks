@@ -49,7 +49,7 @@ class MainActivity : AppCompatActivity() {
             }
             R.id.mode_add -> {
                 drawZone.mode = Mode.ADD
-                Toast.makeText(this,"Mode Ajout", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this,"@+id/mode_add", Toast.LENGTH_SHORT).show()
                 true
             }
             R.id.mode_connect -> {

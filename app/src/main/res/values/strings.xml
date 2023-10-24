@@ -5,4 +5,8 @@
     <string name="mode_edit">Mode edition</string>
     <string name="mode_reset">Réinitialiser le réseau</string>
     <string name="mode_move">Mode déplacement</string>
+    <string name="alerteDialog_title">"Nom de l'objet"</string>
+    <string name="alerteDialog_message">"Saisir le nom de l'objet"</string>
+    <string name="alerteDialog_confirm">Créer</string>
+    <string name="alerteDialog_cancel">Annuler</string>
 </resources>
