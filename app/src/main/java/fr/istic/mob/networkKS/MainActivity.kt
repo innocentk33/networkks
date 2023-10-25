@@ -28,6 +28,8 @@ class MainActivity : AppCompatActivity() {
         val drawView = findViewById<FrameLayout>(R.id.drawZone)
         this.drawZone = DrawZone(this)
         this.drawZone.mode = Mode.MOVE
+        Log.d("toolbar", toolbar.height.toString())
+        //limiter la taille de la zone de dessin
         drawView.addView(this.drawZone)
 
     }
