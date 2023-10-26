@@ -1,4 +1,5 @@
 # NetworkKS
+Cette branch contient le code source de la **première version** de l'application NetworkKS.
 # Membres du groupe
  Kacou Innocent  
  Seh Amos Wilfried
