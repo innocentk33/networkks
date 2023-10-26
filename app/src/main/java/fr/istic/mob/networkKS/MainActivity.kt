@@ -28,8 +28,6 @@ class MainActivity : AppCompatActivity() {
         val drawView = findViewById<FrameLayout>(R.id.drawZone)
         this.drawZone = DrawZone(this)
         this.drawZone.mode = Mode.MOVE
-        Log.d("toolbar", toolbar.height.toString())
-        //limiter la taille de la zone de dessin
         drawView.addView(this.drawZone)
 
     }
@@ -46,28 +44,27 @@ class MainActivity : AppCompatActivity() {
         return  when (item.itemId) {
             R.id.mode_reset->{
                 this.recreate()
-                Toast.makeText(this,"Reseau Reinitialisé", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this,R.string.mode_reset, Toast.LENGTH_SHORT).show()
                 true
             }
             R.id.mode_add -> {
                 drawZone.mode = Mode.ADD
-                Toast.makeText(this,"@+id/mode_add", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this,R.string.mode_add, Toast.LENGTH_SHORT).show()
                 true
             }
             R.id.mode_connect -> {
-               // modeConnexion()
                 drawZone.mode = Mode.CONNECT
-                Toast.makeText(this,"Mode Connexion", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this,R.string.mode_connect, Toast.LENGTH_SHORT).show()
                 true
             }
             R.id.mode_edit -> {
-                // modeEdition()
-                Toast.makeText(this,"Mode Edition", Toast.LENGTH_SHORT).show()
+                drawZone.mode = Mode.EDIT
+                Toast.makeText(this,R.string.mode_edit, Toast.LENGTH_SHORT).show()
                 true
             }
             R.id.mode_move->{
                 drawZone.mode = Mode.MOVE
-                Toast.makeText(this,"Mode Deplacement", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this,R.string.mode_move, Toast.LENGTH_SHORT).show()
                 true
             }
             else -> super.onOptionsItemSelected(item)

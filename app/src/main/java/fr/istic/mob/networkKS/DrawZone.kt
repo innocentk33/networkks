@@ -45,7 +45,6 @@ class DrawZone(context: Context) : View(context), GestureDetector.OnGestureListe
     override fun onDraw(canvas: Canvas) {
          val drawZoneHeight = height.toFloat() -100f // la hauteur de la zone de dessin - la hauteur de la toolbar
          val drawZoneWidth = width.toFloat()
-        Log.d("drawZone :",drawZoneWidth.toString())
         if (graph.objets.isNotEmpty()){
             for (obj in graph.objets){
                 canvas.drawRoundRect(obj.rect, Objet.cornerRadius, Objet.cornerRadius, Objet.paint)
@@ -83,10 +82,8 @@ class DrawZone(context: Context) : View(context), GestureDetector.OnGestureListe
 
             }
             Mode.CONNECT->{
-            Log.d("mode connexion",mode.name.toString())
                 when (event.action) {
                     MotionEvent.ACTION_DOWN -> {
-                        Log.d("action","action down")
                         //verifier si l'objet est selectionné
                         val touchedObject = findObjectAtPoint(event.x, event.y)
                         if (touchedObject !=null){
@@ -99,7 +96,6 @@ class DrawZone(context: Context) : View(context), GestureDetector.OnGestureListe
 
                     }
                     MotionEvent.ACTION_MOVE -> {
-                        Log.d("action","action move")
                         if (isCreatingConnection) {
                             // ici je met à jour le chemin temporaire à chaque mouvement du doigt
                             tempPath.lineTo(event.x, event.y)
@@ -109,7 +105,6 @@ class DrawZone(context: Context) : View(context), GestureDetector.OnGestureListe
 
                     }
                     MotionEvent.ACTION_UP -> {
-                        Log.d("action","action up")
                         if (isCreatingConnection) {
                             // Vérifiez si le doigt est relâché sur un autre objet
                             val endObject = findObjectAtPoint(event.x, event.y)
@@ -161,9 +156,8 @@ class DrawZone(context: Context) : View(context), GestureDetector.OnGestureListe
                                 if (newPositionAfterDrag.x <0){
                                     newPositionAfterDrag.x = 0f
                                 }
-                                Log.d("INNO : X", newPositionAfterDrag.x.toString())
-
-                                Log.d("INNO : drawZoneHeight", drawZoneWidth.toString())
+                                Log.d("INNOCENT : X", newPositionAfterDrag.x.toString())
+                                Log.d("INNOCENT : drawZoneHeight", drawZoneWidth.toString())
                                 val offsetX = newPositionAfterDrag.x - draggingObject.position.x
                                 val offsetY = newPositionAfterDrag.y - draggingObject.position.y
                                 draggingObject.position = newPositionAfterDrag
@@ -240,13 +234,12 @@ class DrawZone(context: Context) : View(context), GestureDetector.OnGestureListe
     }
 
     override fun onLongPress(p0: MotionEvent) {
-        Toast.makeText(context, "Appui long détecté", Toast.LENGTH_SHORT).show()
-        Log.d("OnLongPress","OnLongPress")
+        Log.d("OnLongPress","Appui long détecté")
         //afficher une boite de dialogue pour saisir le nom de l'objet
-        val alertDialog = AlertDialog.Builder(context).setTitle("Nom de l'objet").setMessage("Saisir le nom de l'objet")
+        val alertDialog = AlertDialog.Builder(context).setTitle(R.string.alerteDialog_title).setMessage(R.string.alerteDialog_message)
         val editText = EditText(context)
         alertDialog.setView(editText)
-        alertDialog.setPositiveButton("Créer") { dialog, which ->
+        alertDialog.setPositiveButton(R.string.alerteDialog_confirm) { dialog, which ->
             objet = objet.createObjetAtPositionWithLabel(p0,editText.text.toString())
             objet.drawZone = this
             graph.objets.add(objet)
