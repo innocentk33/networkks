@@ -1,8 +1,8 @@
 <resources>
-    <string name="app_name">Network Kacou Seh</string>
+    <string name="app_name">Network Kacou / Seh</string>
     <string name="mode_add">Mode ajout</string>
     <string name="mode_connect">Mode connexion</string>
-    <string name="mode_edit">Mode edition</string>
+    <string name="mode_edit">Modification d’objets/connexions</string>
     <string name="mode_reset">Réinitialiser le réseau</string>
     <string name="mode_move">Mode déplacement</string>
     <string name="alerteDialog_title">"Nom de l'objet"</string>
