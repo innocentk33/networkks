@@ -27,7 +27,7 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(toolbar) //ajout de la toolbar
         val drawView = findViewById<FrameLayout>(R.id.drawZone)
         this.drawZone = DrawZone(this)
-        this.drawZone.mode = Mode.MOVE
+        this.drawZone.mode = Mode.ADD
         drawView.addView(this.drawZone)
 
     }

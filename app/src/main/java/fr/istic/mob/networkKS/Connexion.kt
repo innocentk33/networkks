@@ -39,9 +39,6 @@ class Connexion {
         // Calculez les coordonnées de début et de fin de la ligne droite
         connexion.startConnexion = PointF(start.position.x + Objet.rectWidth / 2, start.position.y + Objet.rectHeight / 2)
         connexion.endConnexion = PointF(end.position.x + Objet.rectWidth / 2, end.position.y + Objet.rectHeight / 2)
-        // Ajoutez la connexion à la liste des connexions de votre modèle
-        start.connexions.add(connexion)
-        end.connexions.add(connexion)
         return connexion
     }
 }

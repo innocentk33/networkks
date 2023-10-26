@@ -25,7 +25,7 @@ import kotlin.math.log
 
 class DrawZone(context: Context) : View(context), GestureDetector.OnGestureListener{
     private var objet = Objet()
-    var mode = Mode.MOVE
+    var mode = Mode.ADD
     private var graph = Graph()
     private var startObject: Objet? = null
     private val tempPath = Path()
@@ -35,16 +35,12 @@ class DrawZone(context: Context) : View(context), GestureDetector.OnGestureListe
     private var draggingObject = Objet()
     private var findObjet = false
     private var connexion = Connexion()
-
-    private var toolbarHeight = 100f
     init {
 
 
     }
 
     override fun onDraw(canvas: Canvas) {
-         val drawZoneHeight = height.toFloat() -100f // la hauteur de la zone de dessin - la hauteur de la toolbar
-         val drawZoneWidth = width.toFloat()
         if (graph.objets.isNotEmpty()){
             for (obj in graph.objets){
                 canvas.drawRoundRect(obj.rect, Objet.cornerRadius, Objet.cornerRadius, Objet.paint)
