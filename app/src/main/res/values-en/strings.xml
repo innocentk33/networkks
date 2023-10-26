@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Network Kacou Seh</string>
+    <string name="mode_add">Add mode</string>
+    <string name="mode_connect">Connection mode</string>
+    <string name="mode_edit">Edit mode</string>
+    <string name="mode_reset">Reset network</string>
+    <string name="mode_move">Move mode</string>
+    <string name="alerteDialog_title">"Object name"</string>
+    <string name="alerteDialog_message">"Enter the object name"</string>
+    <string name="alerteDialog_confirm">Create</string>
+    <string name="alerteDialog_cancel">Cancel</string>
+</resources>
