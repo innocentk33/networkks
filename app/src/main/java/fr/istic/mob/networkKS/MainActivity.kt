@@ -10,6 +10,7 @@ import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
+import com.google.gson.Gson
 import fr.istic.mob.networkKS.models.Objet
 
 
@@ -27,9 +28,20 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(toolbar) //ajout de la toolbar
         val drawView = findViewById<FrameLayout>(R.id.drawZone)
         this.drawZone = DrawZone(this)
-        this.drawZone.mode = Mode.MOVE
+        this.drawZone.mode = Mode.ADD
         drawView.addView(this.drawZone)
 
+
+
+        // Créez une instance de la classe Objet
+        val objet = Objet(positionX = 100.0f, positionY = 200.0f, label = "Objet 1")
+
+// Initialisez la bibliothèque GSON
+        val gson = Gson()
+
+// Sérialisez l'objet en JSON
+        val json = gson.toJson(objet)
+        Log.d("Objet", json)
     }
 
 
@@ -67,6 +79,16 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(this,R.string.mode_move, Toast.LENGTH_SHORT).show()
                 true
             }
+            R.id.saveNetwork->{
+                drawZone.saveGraph()
+               true
+            }
+            R.id.viewSavedNetwork->{
+                //drawZone.viewSavedNetwork()
+                Toast.makeText(this,R.string.view_saved_network, Toast.LENGTH_SHORT).show()
+                true
+            }
+
             else -> super.onOptionsItemSelected(item)
         }
     }

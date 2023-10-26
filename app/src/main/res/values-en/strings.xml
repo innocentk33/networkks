@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Network Kacou / Seh</string>
+    <string name="app_name">Network Kacou/Seh</string>
     <string name="mode_add">Add mode</string>
     <string name="mode_connect">Connection mode</string>
     <string name="mode_edit">Edit mode</string>
@@ -9,4 +9,8 @@
     <string name="alerteDialog_message">"Enter the object name"</string>
     <string name="alerteDialog_confirm">Create</string>
     <string name="alerteDialog_cancel">Cancel</string>
+    <string name="save_network">Save network</string>
+    <string name="view_saved_network">View saved networks</string>
+    <string name="delete_saved_network">Delete saved networks</string>
+    <string name="delete_saved_network_confirm">Delete</string>
 </resources>

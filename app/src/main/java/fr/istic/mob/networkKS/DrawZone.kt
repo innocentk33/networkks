@@ -2,21 +2,18 @@ package fr.istic.mob.networkKS
 
 import android.content.Context
 import android.graphics.Canvas
-import android.graphics.Paint
 import android.graphics.Path
 import android.graphics.PointF
 import android.graphics.RectF
-import android.util.AttributeSet
 import android.util.Log
 import android.view.GestureDetector
 import android.view.MotionEvent
 import android.view.View
 import android.widget.EditText
-import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
-import androidx.appcompat.widget.Toolbar
 import androidx.core.view.GestureDetectorCompat
+import com.google.gson.Gson
 import fr.istic.mob.networkKS.models.Graph
 import fr.istic.mob.networkKS.models.Objet
 import kotlin.math.log
@@ -24,18 +21,17 @@ import kotlin.math.log
 //ajouter un gestur detector pour detecter les gestes de l'utilisateur
 
 class DrawZone(context: Context) : View(context), GestureDetector.OnGestureListener{
-    private var objet = Objet()
+    private var objet = Objet(0f,0f,"")
     var mode = Mode.MOVE
-    private var graph = Graph()
+    var graph = Graph(ArrayList<Objet>(), ArrayList<Connexion>())
     private var startObject: Objet? = null
     private val tempPath = Path()
     private val gestureDetector = GestureDetectorCompat(context, this)
     private var isDragging = false
     private var isCreatingConnection = false
-    private var draggingObject = Objet()
+    private var draggingObject = Objet(0f,0f,"")
     private var findObjet = false
     private var connexion = Connexion()
-
     private var toolbarHeight = 100f
     init {
 
@@ -43,8 +39,6 @@ class DrawZone(context: Context) : View(context), GestureDetector.OnGestureListe
     }
 
     override fun onDraw(canvas: Canvas) {
-         val drawZoneHeight = height.toFloat() -100f // la hauteur de la zone de dessin - la hauteur de la toolbar
-         val drawZoneWidth = width.toFloat()
         if (graph.objets.isNotEmpty()){
             for (obj in graph.objets){
                 canvas.drawRoundRect(obj.rect, Objet.cornerRadius, Objet.cornerRadius, Objet.paint)
@@ -54,8 +48,9 @@ class DrawZone(context: Context) : View(context), GestureDetector.OnGestureListe
             // Dessiner les connexions existantes
             for (connexion in graph.connexions) {
                 canvas.drawLine(
-                    connexion.startConnexion.x, connexion.startConnexion.y,
-                    connexion.endConnexion.x, connexion.endConnexion.y,
+
+                    connexion.startConnexionX, connexion.startConnexionY,
+                   connexion.endConnexionX, connexion.endConnexionY,
                     connexion.connectionPaint
                 )
             }
@@ -77,6 +72,8 @@ class DrawZone(context: Context) : View(context), GestureDetector.OnGestureListe
                 if (gestureDetector.onTouchEvent(event)) {
                     return true // si le geste est detecté on retourne true
                 }
+               // Log.d("GraphConnexion", graph.toString())
+
             }
             Mode.EDIT->{
 
@@ -84,6 +81,7 @@ class DrawZone(context: Context) : View(context), GestureDetector.OnGestureListe
             Mode.CONNECT->{
                 when (event.action) {
                     MotionEvent.ACTION_DOWN -> {
+                        Log.d("Graph", graph.toString())
                         //verifier si l'objet est selectionné
                         val touchedObject = findObjectAtPoint(event.x, event.y)
                         if (touchedObject !=null){
@@ -169,10 +167,14 @@ class DrawZone(context: Context) : View(context), GestureDetector.OnGestureListe
                                 )
                                 for (connexion in graph.connexions) {
                                     if (connexion.startObjet == draggingObject) {
-                                        connexion.startConnexion.offset(offsetX, offsetY)
+                                       // connexion.startConnexion.offset(offsetX, offsetY)
+                                        connexion.startConnexionX = connexion.startConnexionX + offsetX
+                                        connexion.startConnexionY = connexion.startConnexionY + offsetY
                                     }
                                     if (connexion.endObjet == draggingObject) {
-                                        connexion.endConnexion.offset(offsetX, offsetY)
+                                       // connexion.endConnexion.offset(offsetX, offsetY)
+                                        connexion.endConnexionX = connexion.endConnexionX + offsetX
+                                        connexion.endConnexionY = connexion.endConnexionY + offsetY
                                     }
                                 }
                                 invalidate()
@@ -241,7 +243,6 @@ class DrawZone(context: Context) : View(context), GestureDetector.OnGestureListe
         alertDialog.setView(editText)
         alertDialog.setPositiveButton(R.string.alerteDialog_confirm) { dialog, which ->
             objet = objet.createObjetAtPositionWithLabel(p0,editText.text.toString())
-            objet.drawZone = this
             graph.objets.add(objet)
             invalidate()
         }
@@ -256,6 +257,32 @@ class DrawZone(context: Context) : View(context), GestureDetector.OnGestureListe
        // TODO("Not yet implemented")
         Log.d("OnFling","OnFling")
         return true
+    }
+
+    fun saveGraph() {
+
+        if (graph.objets.isNotEmpty()) {
+            Log.d("Graph", graph.toString())
+            val gson = Gson()
+            val graphJson = gson.toJson(graph)
+            Log.d("GraphJson", graphJson)
+            val sharedPreferences = context.getSharedPreferences("graph", Context.MODE_PRIVATE)
+            val editor = sharedPreferences.edit()
+            editor.putString("graph", graphJson)
+            editor.apply()
+            Toast.makeText(context, "Votre reseau a bien été enregistré", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    fun viewSavedNetwork() {
+        val sharedPreferences = context.getSharedPreferences("graph", Context.MODE_PRIVATE)
+        val graphJson = sharedPreferences.getString("graph", null)
+        if (graphJson != null) {
+            val gson = Gson()
+            val graph = gson.fromJson(graphJson, Graph::class.java) // convertir le json en objet graph
+            this.graph = graph // mettre à jour le graph de la zone de dessin
+            invalidate() // redessiner la zone de dessin
+        }
     }
 
 
