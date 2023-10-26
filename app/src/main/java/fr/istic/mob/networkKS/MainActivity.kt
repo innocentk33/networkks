@@ -84,7 +84,7 @@ class MainActivity : AppCompatActivity() {
                true
             }
             R.id.viewSavedNetwork->{
-                //drawZone.viewSavedNetwork()
+                drawZone.viewSavedNetwork()
                 Toast.makeText(this,R.string.view_saved_network, Toast.LENGTH_SHORT).show()
                 true
             }
