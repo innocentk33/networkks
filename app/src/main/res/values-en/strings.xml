@@ -13,4 +13,10 @@
     <string name="view_saved_network">View saved network</string>
     <string name="delete_saved_network">Delete saved networks</string>
     <string name="delete_saved_network_confirm">Delete</string>
+    <string name="send_mail">Send by mail</string>
+    <string name="alerteDialog_connexion_title">"Connection name"</string>
+    <string name="alerteDialog_connexion_message">"Enter the connection name"</string>
+    <string name="alerteDialog_connexion_confirm">Create</string>
+    <string name="alerteDialog_connexion_cancel">Cancel</string>
+    <string name="save_network_confirm_message">Your network has been saved</string>
 </resources>

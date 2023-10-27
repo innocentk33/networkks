@@ -7,7 +7,6 @@ import java.io.Serializable
 data class Graph(
     @SerializedName("Objets")
     var objets: ArrayList<Objet>,
-
     @SerializedName("Connexions")
     var connexions: ArrayList<Connexion>,
 ) : Serializable

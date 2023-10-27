@@ -1,10 +1,14 @@
 package fr.istic.mob.networkKS
 
 import android.content.Context
+import android.content.Intent
+import android.graphics.Bitmap
 import android.graphics.Canvas
 import android.graphics.Path
+import android.graphics.PathMeasure
 import android.graphics.PointF
 import android.graphics.RectF
+import android.net.Uri
 import android.util.Log
 import android.view.GestureDetector
 import android.view.MotionEvent
@@ -16,6 +20,9 @@ import androidx.core.view.GestureDetectorCompat
 import com.google.gson.Gson
 import fr.istic.mob.networkKS.models.Graph
 import fr.istic.mob.networkKS.models.Objet
+import java.io.ByteArrayOutputStream
+import java.io.File
+import java.io.FileOutputStream
 import kotlin.math.log
 
 //ajouter un gestur detector pour detecter les gestes de l'utilisateur
@@ -53,6 +60,11 @@ class DrawZone(context: Context) : View(context), GestureDetector.OnGestureListe
                    connexion.endConnexionX, connexion.endConnexionY,
                     connexion.connectionPaint
                 )
+                // Dessiner le label centrer
+                val labelPositionX = (connexion.startConnexionX + connexion.endConnexionX) / 2
+                val labelPositionY = (connexion.startConnexionY + connexion.endConnexionY) / 2
+                canvas.drawText(connexion.connexionLabel, labelPositionX, labelPositionY, Objet.labelStyle)
+                //canvas.drawText()
             }
             if (isCreatingConnection) {
                 // Dessinez la connexion temporaire
@@ -198,9 +210,19 @@ class DrawZone(context: Context) : View(context), GestureDetector.OnGestureListe
 
     private fun createConnection(start: Objet?, end: Objet?) {
         if (start != null && end != null) {
-            val connection = connexion.createConnection(start,end)
-            graph.connexions.add(connection)
-            invalidate()
+            // afficher une boite de dialogue pour saisir le nom de la connexion
+            val alertDialogConnexion = AlertDialog.Builder(context).setTitle(R.string.alerteDialog_connexion_title).setMessage(R.string.alerteDialog_connexion_message)
+            val editTextConnexion = EditText(context)
+            alertDialogConnexion.setView(editTextConnexion)
+            alertDialogConnexion.setPositiveButton(R.string.alerteDialog_confirm) { dialog, which ->
+                connexion = connexion.createConnectionWithLabel(start,end,editTextConnexion.text.toString())
+                graph.connexions.add(connexion)
+                invalidate()
+            }
+            alertDialogConnexion.setNegativeButton(R.string.alerteDialog_cancel) { dialog, which ->
+                dialog.cancel()
+            }
+            alertDialogConnexion.show()
         }
     }
 
@@ -284,6 +306,8 @@ class DrawZone(context: Context) : View(context), GestureDetector.OnGestureListe
             invalidate() // redessiner la zone de dessin
         }
     }
+
+
 
 
 }

@@ -13,6 +13,12 @@
     <string name="view_saved_network">Voir le réseau sauvegardé</string>
     <string name="delete_saved_network">Supprimer les réseaux sauvegardés</string>
     <string name="delete_saved_network_confirm">Supprimer</string>
+    <string name="send_mail">Envoyer par mail</string>
+    <string name="alerteDialog_connexion_title">"Nom de la connexion"</string>
+    <string name="alerteDialog_connexion_message">"Saisir le nom de la connexion"</string>
+    <string name="alerteDialog_connexion_confirm">Créer</string>
+    <string name="alerteDialog_connexion_cancel">Annuler</string>
+    <string name="save_network_confirm_message">Votre reseau a bien été enregistré</string>
 </resources>
 
 
