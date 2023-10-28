@@ -5,8 +5,10 @@ import android.graphics.PointF
 import android.os.Bundle
 import android.os.Environment
 import android.util.Log
+import android.view.ContextMenu
 import android.view.Menu
 import android.view.MenuItem
+import android.view.View
 import android.widget.FrameLayout
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -31,6 +33,7 @@ class MainActivity : AppCompatActivity() {
         this.drawZone.mode = Mode.ADD
         drawView.addView(this.drawZone)
         Utils().askPermission(this)
+        registerForContextMenu(drawView)
 
     }
 
@@ -86,6 +89,29 @@ class MainActivity : AppCompatActivity() {
             }
 
             else -> super.onOptionsItemSelected(item)
+        }
+    }
+
+    override fun onCreateContextMenu(
+        menu: ContextMenu?,
+        v: View?,
+        menuInfo: ContextMenu.ContextMenuInfo?
+    ) {
+        super.onCreateContextMenu(menu, v, menuInfo)
+        menuInflater.inflate(R.menu.context_menu_objet,menu)
+    }
+
+    override fun onContextItemSelected(item: MenuItem): Boolean {
+        return when(item.itemId){
+            R.id.delete_object->{
+                //drawZone.deleteObjet()
+                true
+            }
+            R.id.edit_object->{
+               // drawZone.editObjet()
+                true
+            }
+            else -> super.onContextItemSelected(item)
         }
     }
 

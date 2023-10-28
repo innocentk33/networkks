@@ -10,10 +10,15 @@ import android.graphics.PointF
 import android.graphics.RectF
 import android.net.Uri
 import android.util.Log
+import android.view.ContextMenu
 import android.view.GestureDetector
+import android.view.Gravity
+import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
 import android.widget.EditText
+import android.widget.FrameLayout
+import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.GestureDetectorCompat
@@ -88,7 +93,13 @@ class DrawZone(context: Context) : View(context), GestureDetector.OnGestureListe
 
             }
             Mode.EDIT->{
-
+                if (event.action == MotionEvent.ACTION_DOWN) {
+                    val touchedObject = findObjectAtPoint(event.x, event.y)
+                    if (touchedObject != null) {
+                        popupMenuObjet(touchedObject,this)
+                    }
+                    return true
+                }
             }
             Mode.CONNECT->{
                 when (event.action) {
@@ -201,8 +212,10 @@ class DrawZone(context: Context) : View(context), GestureDetector.OnGestureListe
                         startObject = null
                         return true
                     }
+
                 }
             }
+
 
         }
         return super.onTouchEvent(event)
@@ -307,7 +320,54 @@ class DrawZone(context: Context) : View(context), GestureDetector.OnGestureListe
         }
     }
 
+    override fun createContextMenu(menu: ContextMenu?) {
+        super.createContextMenu(menu)
+    }
+
+    override fun onCreateContextMenu(menu: ContextMenu?) {
+        super.onCreateContextMenu(menu)
+    }
+
+    // creer un menu qui s'oouvre lorsqu'on clique longuement sur un objet
+     private fun popupMenuObjet(objet: Objet,view: View) {
+        val popupMenu = PopupMenu(context, view, Gravity.CENTER)
+        popupMenu.inflate(R.menu.context_menu_objet)
+        popupMenu.setOnMenuItemClickListener { item: MenuItem? ->
+            when (item?.itemId) {
+                R.id.edit_object -> {
+                    //afficher une boite de dialogue pour saisir le nom de l'objet
+                    val alertDialog =
+                        AlertDialog.Builder(context).setTitle(R.string.alerteDialog_title)
+                            .setMessage(R.string.alerteDialog_message)
+                    val editText = EditText(context)
+                    alertDialog.setView(editText)
+                    alertDialog.setPositiveButton(R.string.alerteDialog_confirm) { dialog, which ->
+                        objet.label = editText.text.toString()
+                        invalidate()
+                    }
+                    alertDialog.setNegativeButton(R.string.alerteDialog_cancel) { dialog, which ->
+                        dialog.cancel()
+                    }
+                    alertDialog.show()
+                    true
+                }
+
+                R.id.delete_object -> {
+                    graph.objets.remove(objet)
+                    invalidate()
+                    true
+                }
+
+                else -> false
+            }
+        }
+        popupMenu.show()
 
 
+    }
+
+    private fun contextMenuObjet (objet: Objet){
+
+    }
 
 }

@@ -19,6 +19,10 @@
     <string name="alerteDialog_connexion_confirm">Créer</string>
     <string name="alerteDialog_connexion_cancel">Annuler</string>
     <string name="save_network_confirm_message">Votre reseau a bien été enregistré</string>
+    <string name="edit_object">Modifier Objet</string>
+    <string name="edit_connection">Modifier Connexion</string>
+    <string name="delete_object">Supprimer Objet</string>
+    <string name="delete_connection">Supprimer Connexion</string>
 </resources>
 
 
