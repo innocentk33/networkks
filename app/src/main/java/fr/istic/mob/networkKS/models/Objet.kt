@@ -25,7 +25,7 @@ data class Objet(
 ):Serializable{
     companion object {
 
-        val paint = Paint() // permet de dessiner des formes
+        var paint = Paint() // permet de dessiner des formes
         const val cornerRadius = 10f // Rayon des coins en pixels
         const val rectWidth = 150f
         const val rectHeight = 100f
@@ -36,7 +36,7 @@ data class Objet(
         var labelStyle = Paint()
 
     }
-
+    var color = Paint()
     var rect = RectF() // permet de dessiner un rectangle arrondi
     var position = PointF() // permet de dessiner un rectangle arrondi a la position x,y
 

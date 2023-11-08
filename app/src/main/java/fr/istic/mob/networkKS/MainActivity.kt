@@ -1,23 +1,18 @@
 package fr.istic.mob.networkKS
-
-import android.graphics.Path
-import android.graphics.PointF
 import android.os.Bundle
-import android.os.Environment
-import android.util.Log
-import android.view.ContextMenu
+import android.view.Gravity
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
+import android.widget.EditText
 import android.widget.FrameLayout
+import android.widget.PopupMenu
 import android.widget.Toast
+import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
-import com.google.gson.Gson
 import fr.istic.mob.networkKS.models.Objet
 import fr.istic.mob.networkKS.utils.Utils
-import java.io.File
-
 
 class MainActivity : AppCompatActivity() {
 
@@ -33,7 +28,6 @@ class MainActivity : AppCompatActivity() {
         this.drawZone.mode = Mode.ADD
         drawView.addView(this.drawZone)
         Utils().askPermission(this)
-        registerForContextMenu(drawView)
 
     }
 
@@ -92,27 +86,49 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    override fun onCreateContextMenu(
-        menu: ContextMenu?,
-        v: View?,
-        menuInfo: ContextMenu.ContextMenuInfo?
-    ) {
-        super.onCreateContextMenu(menu, v, menuInfo)
-        menuInflater.inflate(R.menu.context_menu_objet,menu)
-    }
 
-    override fun onContextItemSelected(item: MenuItem): Boolean {
-        return when(item.itemId){
-            R.id.delete_object->{
-                //drawZone.deleteObjet()
-                true
+     fun popupMenuObjet(objet: Objet) {
+        val objetView = View(drawZone.context)
+        objetView.x = objet.positionX
+        objetView.y = objet.positionY
+        objetView.visibility = View.VISIBLE
+        objetView.layoutParams = FrameLayout.LayoutParams(Objet.rectWidth.toInt(), Objet.rectHeight.toInt())
+         val context = objetView.context
+
+        val popupMenu = PopupMenu(context, objetView, Gravity.START)
+        popupMenu.inflate(R.menu.context_menu_objet)
+        popupMenu.setOnMenuItemClickListener { item: MenuItem? ->
+            when (item?.itemId) {
+                R.id.edit_object -> {
+                    //afficher une boite de dialogue pour saisir le nom de l'objet
+                    val alertDialog =
+                        AlertDialog.Builder(context).setTitle(R.string.alerteDialog_title)
+                            .setMessage(R.string.alerteDialog_message)
+                    val editText = EditText(context)
+                    alertDialog.setView(editText)
+                    alertDialog.setPositiveButton(R.string.alerteDialog_confirm) { dialog, which ->
+                        objet.label = editText.text.toString()
+                       // invalidate()
+                    }
+                    alertDialog.setNegativeButton(R.string.alerteDialog_cancel) { dialog, which ->
+                        dialog.cancel()
+                    }
+                    alertDialog.show()
+                    true
+                }
+
+                R.id.delete_object -> {
+                  //  graph.objets.remove(objet)
+                   // invalidate()
+                    true
+                }
+
+                else -> false
             }
-            R.id.edit_object->{
-               // drawZone.editObjet()
-                true
-            }
-            else -> super.onContextItemSelected(item)
         }
+        popupMenu.show()
+
+
     }
 
 

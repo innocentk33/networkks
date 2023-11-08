@@ -1,41 +1,39 @@
 package fr.istic.mob.networkKS
 
 import android.content.Context
-import android.content.Intent
-import android.graphics.Bitmap
 import android.graphics.Canvas
+import android.graphics.Color
 import android.graphics.Path
-import android.graphics.PathMeasure
 import android.graphics.PointF
 import android.graphics.RectF
-import android.net.Uri
 import android.util.Log
 import android.view.ContextMenu
 import android.view.GestureDetector
 import android.view.Gravity
+import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.MotionEvent
 import android.view.View
+import android.view.ViewGroup
+import android.widget.Button
 import android.widget.EditText
-import android.widget.FrameLayout
 import android.widget.PopupMenu
+import android.widget.PopupWindow
+import android.widget.RadioButton
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.core.view.GestureDetectorCompat
 import com.google.gson.Gson
 import fr.istic.mob.networkKS.models.Graph
 import fr.istic.mob.networkKS.models.Objet
-import java.io.ByteArrayOutputStream
-import java.io.File
-import java.io.FileOutputStream
-import kotlin.math.log
+
 
 //ajouter un gestur detector pour detecter les gestes de l'utilisateur
 
 class DrawZone(context: Context) : View(context), GestureDetector.OnGestureListener{
     private var objet = Objet(0f,0f,"")
     var mode = Mode.MOVE
-    var graph = Graph(ArrayList<Objet>(), ArrayList<Connexion>())
+    private var graph = Graph(ArrayList<Objet>(), ArrayList<Connexion>())
     private var startObject: Objet? = null
     private val tempPath = Path()
     private val gestureDetector = GestureDetectorCompat(context, this)
@@ -44,7 +42,6 @@ class DrawZone(context: Context) : View(context), GestureDetector.OnGestureListe
     private var draggingObject = Objet(0f,0f,"")
     private var findObjet = false
     private var connexion = Connexion()
-    private var toolbarHeight = 100f
     init {
 
 
@@ -96,7 +93,10 @@ class DrawZone(context: Context) : View(context), GestureDetector.OnGestureListe
                 if (event.action == MotionEvent.ACTION_DOWN) {
                     val touchedObject = findObjectAtPoint(event.x, event.y)
                     if (touchedObject != null) {
-                        popupMenuObjet(touchedObject,this)
+                        //popupMenuObjet(touchedObject,this)
+                       // popupWindowObjet(touchedObject)
+                        editObjectMenu(touchedObject)
+
                     }
                     return true
                 }
@@ -329,8 +329,8 @@ class DrawZone(context: Context) : View(context), GestureDetector.OnGestureListe
     }
 
     // creer un menu qui s'oouvre lorsqu'on clique longuement sur un objet
-     private fun popupMenuObjet(objet: Objet,view: View) {
-        val popupMenu = PopupMenu(context, view, Gravity.CENTER)
+     private fun popupMenuObjet(objet: Objet,drawZone: DrawZone) {
+        val popupMenu = PopupMenu(context, drawZone, Gravity.START)
         popupMenu.inflate(R.menu.context_menu_objet)
         popupMenu.setOnMenuItemClickListener { item: MenuItem? ->
             when (item?.itemId) {
@@ -365,6 +365,68 @@ class DrawZone(context: Context) : View(context), GestureDetector.OnGestureListe
 
 
     }
+
+    private fun popupWindowObjet (objet: Objet){
+        // creer un popup window qui s'ouvre lorsqu'on clique longuement sur un objet
+  /*      val window = PopupWindow(this.context)
+        val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
+        val view = inflater.inflate(R.layout.context_menu_layout,null)
+        window.contentView = view
+        window.showAsDropDown(this,objet.positionX.toInt(),objet.positionY.toInt())*/
+
+        val popupView = LayoutInflater.from(context).inflate(R.layout.context_menu_layout, null)
+        val popupWindow = PopupWindow(popupView,
+            ViewGroup.LayoutParams.WRAP_CONTENT,
+            ViewGroup.LayoutParams.WRAP_CONTENT,
+            true,
+        )
+        popupWindow.showAsDropDown(this,objet.positionX.toInt(),objet.positionY.toInt())
+
+    }
+
+    // ouvrir une boite de dialogue pour modifier notre objet. les menus ne fonctionnent pas bien
+    private fun editObjectMenu(objet: Objet) {
+        // Charger le layout personnalisé de la boîte de dialogue
+        val alertDialogLayout = LayoutInflater.from(context).inflate(R.layout.context_menu_layout, null)
+
+        // Créer la boîte de dialogue
+        val alertDialog = AlertDialog.Builder(context)
+            .setTitle(R.string.alerteDialog_edit_menu_title)
+            .setView(alertDialogLayout) // Utilisez setView pour définir la vue
+
+        // Obtenir des références aux boutons dans le layout de la boîte de dialogue
+        val btnDelete = alertDialogLayout.findViewById<Button>(R.id.btnDelete)
+        val btnEdit = alertDialogLayout.findViewById<Button>(R.id.btnEdit)
+
+        // obtenir les references des boutons dans le layout de la boite de dialogue
+        val editText = alertDialogLayout.findViewById<EditText>(R.id.editTextObjectName)
+        val redColor = alertDialogLayout.findViewById<RadioButton>(R.id.radioButtonRed)
+        val greenColor = alertDialogLayout.findViewById<RadioButton>(R.id.radioButtonGreen)
+        val blueColor = alertDialogLayout.findViewById<RadioButton>(R.id.radioButtonBlue)
+        val magentaColor = alertDialogLayout.findViewById<RadioButton>(R.id.radioButtonMagenta)
+        val cyanColor = alertDialogLayout.findViewById<RadioButton>(R.id.radioButtonCyan)
+        val orangeColor = alertDialogLayout.findViewById<RadioButton>(R.id.radioButtonOrange)
+
+
+
+        // Gérer les actions des boutons ici
+        btnEdit.setOnClickListener {
+            Toast.makeText(context, "Bouton Edit cliqué", Toast.LENGTH_SHORT).show()
+            if (greenColor.isChecked){
+               objet.color.color = Color.GREEN
+            }
+            invalidate()
+        }
+        btnDelete.setOnClickListener {
+            Toast.makeText(context, "Bouton Delete cliqué", Toast.LENGTH_SHORT).show()
+        }
+        alertDialog.setNegativeButton(R.string.alerteDialog_cancel) { dialog, which ->
+            dialog.cancel()
+        }
+        // Afficher la boîte de dialogue
+        alertDialog.show()
+    }
+
 
     private fun contextMenuObjet (objet: Objet){
 

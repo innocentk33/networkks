@@ -18,6 +18,7 @@ class Utils {
     fun sendMail (view: View,context: Context){
 
         val fileDir = context.filesDir
+
         Log.d("Cache File Dir: ",fileDir.absolutePath)
         val cacheDir = context.cacheDir
         Log.d("Cache File Dir: ",cacheDir.absolutePath)

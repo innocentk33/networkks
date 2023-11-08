@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:backgroundTint="#1A000000"
+    android:orientation="vertical">
+    <EditText
+        android:id="@+id/editTextObjectName"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:ems="10"
+        android:inputType="text"
+        android:hint="@string/hintText"
+        android:autofillHints="name"
+
+        />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/choseColorTitle"
+        android:gravity="start"
+        />
+    <RadioGroup
+        android:id="@+id/radioGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <RadioButton
+            android:id="@+id/radioButtonRed"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/red"
+            android:textColor="@color/red"
+            android:textStyle="bold" />
+        <RadioButton
+            android:id="@+id/radioButtonGreen"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/green"
+            android:textColor="@color/green"
+            android:textStyle="bold" />
+        <RadioButton
+            android:id="@+id/radioButtonBlue"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/blue"
+            android:textColor="@color/light_blue_400"
+            android:textStyle="bold" />
+
+        <RadioButton
+            android:id="@+id/radioButtonOrange"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/orange"
+            android:textColor="@color/orange"
+            android:textStyle="bold" />
+        <RadioButton
+            android:id="@+id/radioButtonCyan"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/cyan"
+            android:textColor="@color/cyan"
+            android:textStyle="bold" />
+        <RadioButton
+            android:id="@+id/radioButtonMagenta"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/magenta"
+            android:textColor="@color/magenta"
+            android:textStyle="bold" />
+
+
+    </RadioGroup>
+
+
+
+    <Button
+        android:id="@+id/btnEdit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:textColor="@color/white"
+        android:text="@string/edit_object" />
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/btnDelete"
+        android:backgroundTint="@android:color/holo_red_light"
+        android:text="@string/delete_object"
+        android:textColor="@color/white"
+        />
+</LinearLayout>
