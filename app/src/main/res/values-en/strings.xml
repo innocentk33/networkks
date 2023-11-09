@@ -16,14 +16,17 @@
     <string name="send_mail">Send by mail</string>
     <string name="alerteDialog_connexion_title">"Connection name"</string>
     <string name="alerteDialog_connexion_message">"Enter the connection name"</string>
-    <string name="alerteDialog_connexion_confirm">Create</string>
+    <string name="alerteDialog_connexion_confirm">OK</string>
     <string name="alerteDialog_connexion_cancel">Cancel</string>
+    <string name="alertDialog_connexion_edit_title">"Edit connection"</string>
+    <string name="alertDialog_connexion_edit_message">"Enter the connection name"</string>
+    <string name="alertDialog_connexion_edit_confirm">OK</string>
     <string name="save_network_confirm_message">Your network has been saved</string>
     <string name="edit_object">Edit Object</string>
     <string name="edit_connection">Edit Connection</string>
     <string name="delete_object">Delete Object</string>
     <string name="delete_connection">Delete Connection</string>
-   <string name="alerteDialog_edit_menu_title">"Edit object"</string>
+    <string name="alerteDialog_edit_menu_title">"Edit object"</string>
     <string name="hintText">Name</string>
     <string name="choseColorTitle">Choose a color</string>
     <string name="red">Red</string>
@@ -36,5 +39,11 @@
     <string name="magenta">Magenta</string>
     <string name="black">Black</string>
     <string name="white">White</string>
+    <string name="checkForDelete">"Check to delete object!"</string>
+    <string name="connexionTaille_Petite">Small</string>
+    <string name="connexionTaille_Moyenne">Medium</string>
+    <string name="connexionTaille_Grande">Large</string>
+    <string name="connexionTaille">Connection size</string>
+    <string name="checkForDeleteConnection">"Check to delete connection"</string>
 
 </resources>

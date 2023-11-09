@@ -3,9 +3,12 @@ package fr.istic.mob.networkKS
 import android.content.Context
 import android.graphics.Canvas
 import android.graphics.Color
+import android.graphics.Paint
 import android.graphics.Path
+import android.graphics.PathMeasure
 import android.graphics.PointF
 import android.graphics.RectF
+import android.graphics.Region
 import android.util.Log
 import android.view.ContextMenu
 import android.view.GestureDetector
@@ -42,30 +45,29 @@ class DrawZone(context: Context) : View(context), GestureDetector.OnGestureListe
     private var draggingObject = Objet(0f,0f,"")
     private var findObjet = false
     private var connexion = Connexion()
-    init {
-
-
-    }
 
     override fun onDraw(canvas: Canvas) {
         if (graph.objets.isNotEmpty()){
             for (obj in graph.objets){
-                canvas.drawRoundRect(obj.rect, Objet.cornerRadius, Objet.cornerRadius, Objet.paint)
+                canvas.drawRoundRect(obj.rect, Objet.cornerRadius, Objet.cornerRadius, obj.paint)
                 // dessiner le label
                 canvas.drawText(obj.label, obj.rect.centerX(), obj.position.y + Objet.labelPositionY, Objet.labelStyle)
             }
             // Dessiner les connexions existantes
             for (connexion in graph.connexions) {
-                canvas.drawLine(
+                // Dessiner la connexion avec drawLine
+                /*canvas.drawLine(
 
                     connexion.startConnexionX, connexion.startConnexionY,
                    connexion.endConnexionX, connexion.endConnexionY,
                     connexion.connectionPaint
-                )
+                )*/
+                // Dessiner la connexion avec drawPath
+                canvas.drawPath(connexion.path, connexion.connectionPaint)
                 // Dessiner le label centrer
-                val labelPositionX = (connexion.startConnexionX + connexion.endConnexionX) / 2
-                val labelPositionY = (connexion.startConnexionY + connexion.endConnexionY) / 2
-                canvas.drawText(connexion.connexionLabel, labelPositionX, labelPositionY, Objet.labelStyle)
+      /*          val labelPositionX = (connexion.startConnexionX + connexion.endConnexionX) / 2
+                val labelPositionY = (connexion.startConnexionY + connexion.endConnexionY) / 2*/
+                canvas.drawText(connexion.connexionLabel, connexion.labelPositionX, connexion.labelPositionY, connexion.labelStyle)
                 //canvas.drawText()
             }
             if (isCreatingConnection) {
@@ -80,25 +82,16 @@ class DrawZone(context: Context) : View(context), GestureDetector.OnGestureListe
 
 
     override fun onTouchEvent(event: MotionEvent): Boolean {
-        // Faire un when sur le mode
         when (mode){
             Mode.ADD->{
                 if (gestureDetector.onTouchEvent(event)) {
                     return true // si le geste est detecté on retourne true
                 }
-               // Log.d("GraphConnexion", graph.toString())
-
             }
             Mode.EDIT->{
-                if (event.action == MotionEvent.ACTION_DOWN) {
-                    val touchedObject = findObjectAtPoint(event.x, event.y)
-                    if (touchedObject != null) {
-                        //popupMenuObjet(touchedObject,this)
-                       // popupWindowObjet(touchedObject)
-                        editObjectMenu(touchedObject)
-
-                    }
-                    return true
+               // findConnexionAtPoint(event.x,event.y)
+                if (gestureDetector.onTouchEvent(event)) {
+                    return true // si le geste est detecté on retourne true
                 }
             }
             Mode.CONNECT->{
@@ -162,6 +155,7 @@ class DrawZone(context: Context) : View(context), GestureDetector.OnGestureListe
                         if (isDragging) {
                             if (findObjet) {
                                 val newPositionAfterDrag = PointF(event.x, event.y)
+
                                 //limiter la zone de deplacement des objets dans le frameLayout
                                 if (newPositionAfterDrag.y <0) {
                                     newPositionAfterDrag.y = 0f
@@ -193,11 +187,29 @@ class DrawZone(context: Context) : View(context), GestureDetector.OnGestureListe
                                        // connexion.startConnexion.offset(offsetX, offsetY)
                                         connexion.startConnexionX = connexion.startConnexionX + offsetX
                                         connexion.startConnexionY = connexion.startConnexionY + offsetY
+                                        // centrer le label
+                                        connexion.labelPositionX = (connexion.startConnexionX + connexion.endConnexionX) / 2
+                                        connexion.labelPositionY = (connexion.startConnexionY + connexion.endConnexionY) / 2
+                                        connexion.labelPointF = PointF(connexion.labelPositionX, connexion.labelPositionY)
+                                       connexion.path.apply {
+                                             reset()
+                                             moveTo(connexion.startConnexionX, connexion.startConnexionY)
+                                             lineTo(connexion.endConnexionX, connexion.endConnexionY)
+                                       }
                                     }
                                     if (connexion.endObjet == draggingObject) {
                                        // connexion.endConnexion.offset(offsetX, offsetY)
                                         connexion.endConnexionX = connexion.endConnexionX + offsetX
                                         connexion.endConnexionY = connexion.endConnexionY + offsetY
+                                        // centrer le label
+                                        connexion.labelPositionX = (connexion.startConnexionX + connexion.endConnexionX) / 2
+                                        connexion.labelPositionY = (connexion.startConnexionY + connexion.endConnexionY) / 2
+                                        connexion.labelPointF = PointF(connexion.labelPositionX, connexion.labelPositionY)
+                                        connexion.path.apply {
+                                            reset()
+                                            moveTo(connexion.startConnexionX, connexion.startConnexionY)
+                                            lineTo(connexion.endConnexionX, connexion.endConnexionY)
+                                        }
                                     }
                                 }
                                 invalidate()
@@ -227,9 +239,11 @@ class DrawZone(context: Context) : View(context), GestureDetector.OnGestureListe
             val alertDialogConnexion = AlertDialog.Builder(context).setTitle(R.string.alerteDialog_connexion_title).setMessage(R.string.alerteDialog_connexion_message)
             val editTextConnexion = EditText(context)
             alertDialogConnexion.setView(editTextConnexion)
-            alertDialogConnexion.setPositiveButton(R.string.alerteDialog_confirm) { dialog, which ->
-                connexion = connexion.createConnectionWithLabel(start,end,editTextConnexion.text.toString())
+            alertDialogConnexion.setPositiveButton(R.string.alerteDialog_confirm) { _, _ ->
+                connexion = Connexion().createConnectionWithLabel(start,end,editTextConnexion.text.toString())
                 graph.connexions.add(connexion)
+                Log.d("Connexions",graph.connexions.toString())
+                Log.d("Connexions",connexion.toString())
                 invalidate()
             }
             alertDialogConnexion.setNegativeButton(R.string.alerteDialog_cancel) { dialog, which ->
@@ -243,6 +257,17 @@ class DrawZone(context: Context) : View(context), GestureDetector.OnGestureListe
         for (objet in graph.objets) {
             if (objet.rect.contains(x, y)) {
                 return objet
+            }
+        }
+        return null
+    }
+
+    private fun findConnectionLabelAtPosition(x: Float, y: Float): Connexion? {
+        for (connexion in graph.connexions) {
+            val xRange = connexion.labelPositionX - 50..connexion.labelPositionX + 50
+            val yRange = connexion.labelPositionY - 50..connexion.labelPositionY + 50
+            if (x in xRange && y in yRange) {
+                return connexion
             }
         }
         return null
@@ -271,21 +296,33 @@ class DrawZone(context: Context) : View(context), GestureDetector.OnGestureListe
     }
 
     override fun onLongPress(p0: MotionEvent) {
-        Log.d("OnLongPress","Appui long détecté")
-        //afficher une boite de dialogue pour saisir le nom de l'objet
-        val alertDialog = AlertDialog.Builder(context).setTitle(R.string.alerteDialog_title).setMessage(R.string.alerteDialog_message)
-        val editText = EditText(context)
-        alertDialog.setView(editText)
-        alertDialog.setPositiveButton(R.string.alerteDialog_confirm) { dialog, which ->
-            objet = objet.createObjetAtPositionWithLabel(p0,editText.text.toString())
-            graph.objets.add(objet)
-            invalidate()
+
+        val touchedObject = findObjectAtPoint(p0.x, p0.y)
+        val touchedConnexionLabel = findConnectionLabelAtPosition(p0.x,p0.y)
+        if (touchedObject != null) {
+            editObjectMenu(touchedObject)
         }
-        alertDialog.setNegativeButton(R.string.alerteDialog_cancel) { dialog, which ->
-            dialog.cancel()
+        if (touchedConnexionLabel != null){
+            editConnexionMenu(touchedConnexionLabel)
         }
-        alertDialog.show()
-        Log.d("Objets : = ", graph.objets.toString())
+     /*   if (touchedConnexion != null){
+            editConnexionMenu(touchedConnexion)
+        }*/
+       if (mode == Mode.ADD){
+           val alertDialog = AlertDialog.Builder(context).setTitle(R.string.alerteDialog_title).setMessage(R.string.alerteDialog_message)
+           val editText = EditText(context)
+           alertDialog.setView(editText)
+           alertDialog.setPositiveButton(R.string.alerteDialog_confirm) { dialog, which ->
+               objet = objet.createObjetAtPositionWithLabel(p0,editText.text.toString())
+               graph.objets.add(objet)
+               invalidate()
+           }
+           alertDialog.setNegativeButton(R.string.alerteDialog_cancel) { dialog, which ->
+               dialog.cancel()
+           }
+           alertDialog.show()
+           Log.d("Objets : = ", graph.objets.toString())
+       }
     }
 
     override fun onFling(p0: MotionEvent, p1: MotionEvent, p2: Float, p3: Float): Boolean {
@@ -366,23 +403,7 @@ class DrawZone(context: Context) : View(context), GestureDetector.OnGestureListe
 
     }
 
-    private fun popupWindowObjet (objet: Objet){
-        // creer un popup window qui s'ouvre lorsqu'on clique longuement sur un objet
-  /*      val window = PopupWindow(this.context)
-        val inflater = context.getSystemService(Context.LAYOUT_INFLATER_SERVICE) as LayoutInflater
-        val view = inflater.inflate(R.layout.context_menu_layout,null)
-        window.contentView = view
-        window.showAsDropDown(this,objet.positionX.toInt(),objet.positionY.toInt())*/
 
-        val popupView = LayoutInflater.from(context).inflate(R.layout.context_menu_layout, null)
-        val popupWindow = PopupWindow(popupView,
-            ViewGroup.LayoutParams.WRAP_CONTENT,
-            ViewGroup.LayoutParams.WRAP_CONTENT,
-            true,
-        )
-        popupWindow.showAsDropDown(this,objet.positionX.toInt(),objet.positionY.toInt())
-
-    }
 
     // ouvrir une boite de dialogue pour modifier notre objet. les menus ne fonctionnent pas bien
     private fun editObjectMenu(objet: Objet) {
@@ -394,9 +415,6 @@ class DrawZone(context: Context) : View(context), GestureDetector.OnGestureListe
             .setTitle(R.string.alerteDialog_edit_menu_title)
             .setView(alertDialogLayout) // Utilisez setView pour définir la vue
 
-        // Obtenir des références aux boutons dans le layout de la boîte de dialogue
-        val btnDelete = alertDialogLayout.findViewById<Button>(R.id.btnDelete)
-        val btnEdit = alertDialogLayout.findViewById<Button>(R.id.btnEdit)
 
         // obtenir les references des boutons dans le layout de la boite de dialogue
         val editText = alertDialogLayout.findViewById<EditText>(R.id.editTextObjectName)
@@ -405,20 +423,69 @@ class DrawZone(context: Context) : View(context), GestureDetector.OnGestureListe
         val blueColor = alertDialogLayout.findViewById<RadioButton>(R.id.radioButtonBlue)
         val magentaColor = alertDialogLayout.findViewById<RadioButton>(R.id.radioButtonMagenta)
         val cyanColor = alertDialogLayout.findViewById<RadioButton>(R.id.radioButtonCyan)
-        val orangeColor = alertDialogLayout.findViewById<RadioButton>(R.id.radioButtonOrange)
-
-
-
-        // Gérer les actions des boutons ici
-        btnEdit.setOnClickListener {
-            Toast.makeText(context, "Bouton Edit cliqué", Toast.LENGTH_SHORT).show()
-            if (greenColor.isChecked){
-               objet.color.color = Color.GREEN
-            }
-            invalidate()
+        val orangeColor = alertDialogLayout.findViewById<RadioButton>(R.id.radioButtonYellow)
+        val deleteObjet = alertDialogLayout.findViewById<RadioButton>(R.id.radioButtonDelete)
+        editText.setText( graph.objets[graph.objets.indexOf(objet)].label)
+        when (graph.objets[graph.objets.indexOf(objet)].color){
+            Color.RED -> redColor.isChecked = true
+            Color.GREEN -> greenColor.isChecked = true
+            Color.BLUE -> blueColor.isChecked = true
+            Color.MAGENTA -> magentaColor.isChecked = true
+            Color.CYAN -> cyanColor.isChecked = true
+            Color.YELLOW -> orangeColor.isChecked = true
         }
-        btnDelete.setOnClickListener {
-            Toast.makeText(context, "Bouton Delete cliqué", Toast.LENGTH_SHORT).show()
+        alertDialog.setPositiveButton(R.string.alerteDialog_confirm) { _, _ ->
+            objet.label = editText.text.toString()
+            if (greenColor.isChecked){
+                objet.color = Color.GREEN
+                graph.objets[graph.objets.indexOf(objet)].color = objet.color
+                objet.paint.color = objet.color
+                graph.objets[graph.objets.indexOf(objet)].paint.color = objet.color
+
+            }
+            if (redColor.isChecked){
+                objet.color = Color.RED
+                graph.objets[graph.objets.indexOf(objet)].color = objet.color
+                objet.paint.color = objet.color
+                graph.objets[graph.objets.indexOf(objet)].paint.color = objet.color
+
+            }
+            if (blueColor.isChecked){
+                objet.color = Color.BLUE
+                graph.objets[graph.objets.indexOf(objet)].color = objet.color
+                objet.paint.color = objet.color
+                graph.objets[graph.objets.indexOf(objet)].paint.color = objet.color
+
+            }
+            if (magentaColor.isChecked){
+                objet.color = Color.MAGENTA
+                graph.objets[graph.objets.indexOf(objet)].color = objet.color
+                objet.paint.color = objet.color
+                graph.objets[graph.objets.indexOf(objet)].paint.color = objet.color
+
+            }
+            if (cyanColor.isChecked){
+                objet.color = Color.CYAN
+                graph.objets[graph.objets.indexOf(objet)].color = objet.color
+                objet.paint.color = objet.color
+                graph.objets[graph.objets.indexOf(objet)].paint.color = objet.color
+
+            }
+            if (orangeColor.isChecked){
+                objet.color = Color.YELLOW
+                graph.objets[graph.objets.indexOf(objet)].color = objet.color
+                objet.paint.color = objet.color
+                graph.objets[graph.objets.indexOf(objet)].paint.color = objet.color
+
+            }
+
+            if (deleteObjet.isChecked){
+                graph.objets.remove(objet)
+                graph.connexions.removeIf { it.startObjet == objet || it.endObjet == objet }
+            }
+
+
+            invalidate()
         }
         alertDialog.setNegativeButton(R.string.alerteDialog_cancel) { dialog, which ->
             dialog.cancel()
@@ -428,8 +495,85 @@ class DrawZone(context: Context) : View(context), GestureDetector.OnGestureListe
     }
 
 
-    private fun contextMenuObjet (objet: Objet){
+    private fun editConnexionMenu(connexion: Connexion) {
+        // Charger le layout personnalisé de la boîte de dialogue
+        val alertDialogLayout = LayoutInflater.from(context).inflate(R.layout.edit_connexion_layout, null)
 
+        // Créer la boîte de dialogue
+        val alertDialog = AlertDialog.Builder(context)
+            .setTitle(R.string.alertDialog_connexion_edit_title)
+            .setView(alertDialogLayout) // Utilisez setView pour définir la vue
+
+
+        // obtenir les references des boutons dans le layout de la boite de dialogue
+        val editText = alertDialogLayout.findViewById<EditText>(R.id.editTextObjectName)
+        val redColor = alertDialogLayout.findViewById<RadioButton>(R.id.radioButtonRed)
+        val greenColor = alertDialogLayout.findViewById<RadioButton>(R.id.radioButtonGreen)
+        val blueColor = alertDialogLayout.findViewById<RadioButton>(R.id.radioButtonBlue)
+        val magentaColor = alertDialogLayout.findViewById<RadioButton>(R.id.radioButtonMagenta)
+        val yellowColor = alertDialogLayout.findViewById<RadioButton>(R.id.radioButtonYellow)
+        val deleteObjet = alertDialogLayout.findViewById<RadioButton>(R.id.radioButtonDelete)
+        val small = alertDialogLayout.findViewById<RadioButton>(R.id.radioConnexionTaille_Petite)
+        val medium =alertDialogLayout.findViewById<RadioButton>(R.id.radioConnexionTaille_Moyenne)
+        val large = alertDialogLayout.findViewById<RadioButton>(R.id.radioConnexionTaille_Grande)
+
+        editText.setText( graph.connexions[graph.connexions.indexOf(connexion)].connexionLabel)
+        when (graph.connexions[graph.connexions.indexOf(connexion)].connectionPaint.color){
+            Color.RED-> redColor.isChecked = true
+            Color.GREEN-> greenColor.isChecked = true
+            Color.BLUE -> blueColor.isChecked = true
+            Color.MAGENTA -> magentaColor.isChecked = true
+            Color.YELLOW -> yellowColor.isChecked = true
+        }
+        alertDialog.setPositiveButton(R.string.alerteDialog_confirm) { _, _ ->
+            connexion.connexionLabel = editText.text.toString()
+
+            if (greenColor.isChecked){
+                connexion.connectionPaint.color = Color.GREEN
+                graph.connexions[graph.connexions.indexOf(connexion)].connectionPaint.color = Color.GREEN
+            }
+            if (redColor.isChecked){
+                connexion.connectionPaint.color = Color.RED
+                graph.connexions[graph.connexions.indexOf(connexion)].connectionPaint.color = Color.RED
+            }
+            if (blueColor.isChecked){
+                connexion.connectionPaint.color = Color.BLUE
+                graph.connexions[graph.connexions.indexOf(connexion)].connectionPaint.color = Color.BLUE
+            }
+            if (magentaColor.isChecked){
+                connexion.connectionPaint.color = Color.MAGENTA
+                graph.connexions[graph.connexions.indexOf(connexion)].connectionPaint.color = Color.MAGENTA
+            }
+            if (yellowColor.isChecked){
+                connexion.connectionPaint.color = Color.YELLOW
+                graph.connexions[graph.connexions.indexOf(connexion)].connectionPaint.color = Color.YELLOW
+            }
+            if (small.isChecked){
+                connexion.connectionPaint.strokeWidth = Connexion.smallStroke
+                graph.connexions[graph.connexions.indexOf(connexion)].connectionPaint.strokeWidth = Connexion.smallStroke
+            }
+            if (medium.isChecked){
+                connexion.connectionPaint.strokeWidth = Connexion.mediumStroke
+                graph.connexions[graph.connexions.indexOf(connexion)].connectionPaint.strokeWidth = Connexion.mediumStroke
+            }
+            if (large.isChecked){
+                connexion.connectionPaint.strokeWidth = Connexion.largeStroke
+                graph.connexions[graph.connexions.indexOf(connexion)].connectionPaint.strokeWidth = Connexion.largeStroke
+            }
+
+            if (deleteObjet.isChecked){
+                graph.connexions.remove(connexion)
+            }
+
+
+            invalidate()
+        }
+        alertDialog.setNegativeButton(R.string.alerteDialog_cancel) { dialog, which ->
+            dialog.cancel()
+        }
+        // Afficher la boîte de dialogue
+        alertDialog.show()
     }
+
 
 }

@@ -7,7 +7,7 @@
     <string name="mode_move">Mode déplacement</string>
     <string name="alerteDialog_title">"Nom de l'objet"</string>
     <string name="alerteDialog_message">"Saisir le nom de l'objet"</string>
-    <string name="alerteDialog_confirm">Créer</string>
+    <string name="alerteDialog_confirm">OK</string>
     <string name="alerteDialog_cancel">Annuler</string>
     <string name="save_network">Sauvegarder le réseau</string>
     <string name="view_saved_network">Voir le réseau sauvegardé</string>
@@ -24,6 +24,9 @@
     <string name="delete_object">Supprimer Objet</string>
     <string name="delete_connection">Supprimer Connexion</string>
     <string name="alerteDialog_edit_menu_title">"Modifier objet"</string>
+    <string name="alertDialog_connexion_edit_title">"Modifier connexion"</string>
+    <string name="alertDialog_connexion_edit_message">"Saisir le nom de la connexion"</string>
+    <string name="alertDialog_connexion_edit_confirm">OK</string>
     <string name="hintText">Nom</string>
     <string name="choseColorTitle">Choisir une couleur</string>
     <string name="red">Rouge</string>
@@ -36,6 +39,13 @@
     <string name="magenta">Magenta</string>
     <string name="black">Noir</string>
     <string name="white">Blanc</string>
+    <string name="checkForDelete">"Cocher pour supprimer l'objet!"</string>
+    <string name="checkForDeleteConnection">"Cocher pour supprimer connexion</string>
+    <string name="connexionTaille_Petite">Petite</string>
+    <string name="connexionTaille_Moyenne">Moyenne</string>
+    <string name="connexionTaille_Grande">Grande</string>
+    <string name="connexionTaille">Taille de la connexion</string>
+
 </resources>
 
 

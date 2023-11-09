@@ -6,7 +6,6 @@ import android.graphics.PointF
 import android.graphics.RectF
 import android.view.MotionEvent
 import com.google.gson.annotations.SerializedName
-import fr.istic.mob.networkKS.Connexion
 import java.io.Serializable
 
 
@@ -25,7 +24,7 @@ data class Objet(
 ):Serializable{
     companion object {
 
-        var paint = Paint() // permet de dessiner des formes
+
         const val cornerRadius = 10f // Rayon des coins en pixels
         const val rectWidth = 150f
         const val rectHeight = 100f
@@ -36,13 +35,13 @@ data class Objet(
         var labelStyle = Paint()
 
     }
-    var color = Paint()
+    var color = Color.RED
     var rect = RectF() // permet de dessiner un rectangle arrondi
     var position = PointF() // permet de dessiner un rectangle arrondi a la position x,y
-
+    var paint = Paint() // permet de dessiner des formes
 
     init {
-        paint.color = Color.RED
+        paint.color = color
         paint.style = Paint.Style.FILL
         labelStyle.style = Paint.Style.FILL
         labelStyle.color = Color.BLACK
@@ -50,6 +49,7 @@ data class Objet(
         labelStyle.typeface = android.graphics.Typeface.DEFAULT_BOLD
         labelStyle.isAntiAlias = true
         labelStyle.textAlign = Paint.Align.CENTER
+
     }
     fun createObjetAtPositionWithLabel(event: MotionEvent,label :String) :Objet{
         val newObjet = Objet(positionX = event.x, positionY = event.y, label = label) // Créez un objet à la position x,y
