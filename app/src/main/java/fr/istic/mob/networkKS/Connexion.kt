@@ -31,6 +31,8 @@ data class Connexion(
     @SerializedName("labelPositionY")
     var labelPositionY: Float = 0f,
 
+
+
     ) : Serializable {
     companion object {
         val tempConnexionPaint = Paint().apply {
@@ -62,19 +64,6 @@ data class Connexion(
 
     init {
 
-    }
-
-
-    fun createConnection(start: Objet, end: Objet): Connexion {
-        // Créez une connexion entre les objets avec une ligne droite
-        val connexion = Connexion()
-        connexion.startObjet = start
-        connexion.endObjet = end
-        connexion.startConnexionX = start.position.x + Objet.rectWidth / 2
-        connexion.startConnexionY = start.position.y + Objet.rectHeight / 2
-        connexion.endConnexionX = end.position.x + Objet.rectWidth / 2
-        connexion.endConnexionY = end.position.y + Objet.rectHeight / 2
-        return connexion
     }
 
     fun createConnectionWithLabel(start: Objet, endObjet: Objet, label: String): Connexion {

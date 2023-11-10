@@ -41,9 +41,12 @@ class DrawZone(context: Context) : View(context), GestureDetector.OnGestureListe
     private val tempPath = Path()
     private val gestureDetector = GestureDetectorCompat(context, this)
     private var isDragging = false
+    private var isDraggingConnexion = false
     private var isCreatingConnection = false
     private var draggingObject = Objet(0f,0f,"")
+    private var draggingConnexion = Connexion(0f,0f,0f,0f,Objet(0f,0f,""),Objet(0f,0f,""),"")
     private var findObjet = false
+    private var findConnexion = false
     private var connexion = Connexion()
 
     override fun onDraw(canvas: Canvas) {
@@ -142,11 +145,17 @@ class DrawZone(context: Context) : View(context), GestureDetector.OnGestureListe
 
                     MotionEvent.ACTION_DOWN -> {
                         val touchedObject = findObjectAtPoint(event.x, event.y)
+                        val touchedConnexion = findConnectionLabelAtPosition(event.x,event.y)
                         if (touchedObject != null) {
                             isDragging = true
                             findObjet = true
                             draggingObject = touchedObject
                         }
+                       if (touchedConnexion != null){
+                           isDraggingConnexion = true
+                           findConnexion = true
+                           draggingConnexion = touchedConnexion
+                       }
                         return true
                     }
                     MotionEvent.ACTION_MOVE -> {
@@ -173,8 +182,6 @@ class DrawZone(context: Context) : View(context), GestureDetector.OnGestureListe
                                 }
                                 Log.d("INNOCENT : X", newPositionAfterDrag.x.toString())
                                 Log.d("INNOCENT : drawZoneHeight", drawZoneWidth.toString())
-                                val offsetX = newPositionAfterDrag.x - draggingObject.position.x
-                                val offsetY = newPositionAfterDrag.y - draggingObject.position.y
                                 draggingObject.position = newPositionAfterDrag
                                 draggingObject.rect = RectF(
                                     newPositionAfterDrag.x,
@@ -184,9 +191,8 @@ class DrawZone(context: Context) : View(context), GestureDetector.OnGestureListe
                                 )
                                 for (connexion in graph.connexions) {
                                     if (connexion.startObjet == draggingObject) {
-                                       // connexion.startConnexion.offset(offsetX, offsetY)
-                                        connexion.startConnexionX = connexion.startConnexionX + offsetX
-                                        connexion.startConnexionY = connexion.startConnexionY + offsetY
+                                        connexion.startConnexionX = draggingObject.position.x + Objet.rectWidth / 2
+                                        connexion.startConnexionY = draggingObject.position.y + Objet.rectHeight / 2
                                         // centrer le label
                                         connexion.labelPositionX = (connexion.startConnexionX + connexion.endConnexionX) / 2
                                         connexion.labelPositionY = (connexion.startConnexionY + connexion.endConnexionY) / 2
@@ -198,9 +204,9 @@ class DrawZone(context: Context) : View(context), GestureDetector.OnGestureListe
                                        }
                                     }
                                     if (connexion.endObjet == draggingObject) {
-                                       // connexion.endConnexion.offset(offsetX, offsetY)
-                                        connexion.endConnexionX = connexion.endConnexionX + offsetX
-                                        connexion.endConnexionY = connexion.endConnexionY + offsetY
+
+                                        connexion.endConnexionX = draggingObject.position.x + Objet.rectWidth / 2
+                                        connexion.endConnexionY = draggingObject.position.y + Objet.rectHeight / 2
                                         // centrer le label
                                         connexion.labelPositionX = (connexion.startConnexionX + connexion.endConnexionX) / 2
                                         connexion.labelPositionY = (connexion.startConnexionY + connexion.endConnexionY) / 2
@@ -212,6 +218,25 @@ class DrawZone(context: Context) : View(context), GestureDetector.OnGestureListe
                                         }
                                     }
                                 }
+                                invalidate()
+                            }
+                        }
+                        if (isDraggingConnexion){
+                            if (findConnexion){
+                                // utiliser Path.quadTo() pour dessiner une courbe de bézier
+                                val newPositionAfterDrag = PointF(event.x, event.y)
+                                draggingConnexion.labelPositionX = newPositionAfterDrag.x
+                                draggingConnexion.labelPositionY = newPositionAfterDrag.y
+                                draggingConnexion.labelPointF = PointF(draggingConnexion.labelPositionX, draggingConnexion.labelPositionY)
+                                draggingConnexion.path.apply {
+                                    reset()
+                                    moveTo(draggingConnexion.startConnexionX, draggingConnexion.startConnexionY)
+                                    quadTo(event.x, event.y, draggingConnexion.endConnexionX, draggingConnexion.endConnexionY)
+                                }
+                                graph.connexions[graph.connexions.indexOf(draggingConnexion)].path = draggingConnexion.path
+                                graph.connexions[graph.connexions.indexOf(draggingConnexion)].labelPositionX = draggingConnexion.labelPositionX
+                                graph.connexions[graph.connexions.indexOf(draggingConnexion)].labelPositionY = draggingConnexion.labelPositionY
+                                graph.connexions[graph.connexions.indexOf(draggingConnexion)].labelPointF = draggingConnexion.labelPointF
                                 invalidate()
                             }
                         }
@@ -353,6 +378,7 @@ class DrawZone(context: Context) : View(context), GestureDetector.OnGestureListe
             val gson = Gson()
             val graph = gson.fromJson(graphJson, Graph::class.java) // convertir le json en objet graph
             this.graph = graph // mettre à jour le graph de la zone de dessin
+            Log.d("Graph", graph.toString())
             invalidate() // redessiner la zone de dessin
         }
     }
@@ -512,7 +538,7 @@ class DrawZone(context: Context) : View(context), GestureDetector.OnGestureListe
         val blueColor = alertDialogLayout.findViewById<RadioButton>(R.id.radioButtonBlue)
         val magentaColor = alertDialogLayout.findViewById<RadioButton>(R.id.radioButtonMagenta)
         val yellowColor = alertDialogLayout.findViewById<RadioButton>(R.id.radioButtonYellow)
-        val deleteObjet = alertDialogLayout.findViewById<RadioButton>(R.id.radioButtonDelete)
+        val deleteConnexion = alertDialogLayout.findViewById<RadioButton>(R.id.radioButtonDelete)
         val small = alertDialogLayout.findViewById<RadioButton>(R.id.radioConnexionTaille_Petite)
         val medium =alertDialogLayout.findViewById<RadioButton>(R.id.radioConnexionTaille_Moyenne)
         val large = alertDialogLayout.findViewById<RadioButton>(R.id.radioConnexionTaille_Grande)
@@ -561,7 +587,7 @@ class DrawZone(context: Context) : View(context), GestureDetector.OnGestureListe
                 graph.connexions[graph.connexions.indexOf(connexion)].connectionPaint.strokeWidth = Connexion.largeStroke
             }
 
-            if (deleteObjet.isChecked){
+            if (deleteConnexion.isChecked){
                 graph.connexions.remove(connexion)
             }
 
