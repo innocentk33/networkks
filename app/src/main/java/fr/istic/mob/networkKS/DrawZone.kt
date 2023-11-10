@@ -376,8 +376,16 @@ class DrawZone(context: Context) : View(context), GestureDetector.OnGestureListe
         val graphJson = sharedPreferences.getString("graph", null)
         if (graphJson != null) {
             val gson = Gson()
-            val graph = gson.fromJson(graphJson, Graph::class.java) // convertir le json en objet graph
-            this.graph = graph // mettre à jour le graph de la zone de dessin
+            val graphRestored = gson.fromJson(graphJson, Graph::class.java) // convertir le json en objet graph
+            for (connexion in graphRestored.connexions) {
+                connexion.path = Path()
+                connexion.path.apply {
+                    reset()
+                    moveTo(connexion.startConnexionX, connexion.startConnexionY)
+                    lineTo(connexion.endConnexionX, connexion.endConnexionY)
+                }
+            }
+            this.graph = graphRestored // mettre à jour le graph de la zone de dessin
             Log.d("Graph", graph.toString())
             invalidate() // redessiner la zone de dessin
         }
