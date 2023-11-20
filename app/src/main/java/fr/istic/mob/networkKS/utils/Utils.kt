@@ -52,17 +52,6 @@ class Utils {
         }
     }
 
-    fun saveScreenshot(view: View, context: Context) {
-        val bitmap = Bitmap.createBitmap(view.width, view.height, Bitmap.Config.ARGB_8888)
-        val canvas = Canvas(bitmap)
-        view.draw(canvas)
-        if (Utils().createScreenshotDirectory()) {
-            val externalStorage = Environment.getExternalStorageDirectory()
-            val dir = File(externalStorage.absolutePath, "graph")
-        }
-    }
-
-
     // demander l'autorisation d'acces au stockage externe
     fun askPermission(context: Context) {
         val permission = android.Manifest.permission.WRITE_EXTERNAL_STORAGE
@@ -79,15 +68,4 @@ class Utils {
             requestPermissions(context as android.app.Activity, permissions, 1)
         }
     }
-
-    private fun createScreenshotDirectory(): Boolean {
-        val fileDirectory =
-            File(Environment.getExternalStorageDirectory().absolutePath, "ScreenShots")
-        if (!fileDirectory.exists()) {
-            fileDirectory.mkdirs()
-        }
-        return true
-    }
-
-
 }
