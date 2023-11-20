@@ -62,32 +62,34 @@ class Utils {
 
     // envoyer un mail avec une capture d'écran
     fun saveView(view: View){
-        val bitmap = Bitmap.createBitmap(view.width, view.height, Bitmap.Config.ARGB_8888)
-        val canvas = Canvas(bitmap)
-        view.draw(canvas)
-        val file = File(view.context.getExternalFilesDir(Environment.DIRECTORY_DCIM), "reseau.jpg")
-        val out = FileOutputStream(file)
-        bitmap.compress(Bitmap.CompressFormat.JPEG, 70, out)
-        out.flush()
-        out.close()
+try {
+    val bitmap = Bitmap.createBitmap(view.width, view.height, Bitmap.Config.ARGB_8888)
+    val canvas = Canvas(bitmap)
+    view.draw(canvas)
+    val file = File(view.context.getExternalFilesDir(Environment.DIRECTORY_DCIM), "reseau.jpg")
+    val out = FileOutputStream(file)
+    bitmap.compress(Bitmap.CompressFormat.JPEG, 70, out)
+    out.flush()
+    out.close()
 
-        val contentUri = FileProvider.getUriForFile(view.context, "${view.context.packageName}.fileprovider", file) // fr.istic.mob.networkKS.fileprovider
+    val contentUri = FileProvider.getUriForFile(view.context, "${view.context.packageName}.fileprovider", file) // fr.istic.mob.networkKS.fileprovider
 
-        // envoyer le mail
-        val emailIntent = Intent(Intent.ACTION_SEND)
-        emailIntent.type = "image/*"
-        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Capture d'écran")
-        emailIntent.putExtra(Intent.EXTRA_TEXT, "Voici la capture d'écran de mon réseau")
-        emailIntent.putExtra(Intent.EXTRA_STREAM, contentUri)
-        emailIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
-        view.context.startActivity(
-            Intent.createChooser(
-                emailIntent,
-                "Choisissez une application"
-            )
+    // envoyer le mail
+    val emailIntent = Intent(Intent.ACTION_SEND)
+    emailIntent.type = "image/*"
+    emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Capture d'écran")
+    emailIntent.putExtra(Intent.EXTRA_TEXT, "Voici la capture d'écran de mon réseau")
+    emailIntent.putExtra(Intent.EXTRA_STREAM, contentUri)
+    emailIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+    view.context.startActivity(
+        Intent.createChooser(
+            emailIntent,
+            "Choisissez une application"
         )
-
-    }
+    )
+}catch (e:Exception){
+e.printStackTrace()
+    } }
 
     fun saveScreenshot(view :View,context:Context){
         val bitmap = Bitmap.createBitmap(view.width, view.height, Bitmap.Config.ARGB_8888)
