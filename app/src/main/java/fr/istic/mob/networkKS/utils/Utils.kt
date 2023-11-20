@@ -9,61 +9,97 @@ import android.os.Environment
 import android.util.Log
 import android.view.View
 import androidx.core.app.ActivityCompat.requestPermissions
+import androidx.core.content.FileProvider
 import fr.istic.mob.networkKS.DrawZone
 import java.io.File
 import java.io.FileOutputStream
 
 class Utils {
     //envoyer un mail simple
-    fun sendMail (view: View,context: Context){
+    fun sendMail (view: View){
 
-        val fileDir = context.filesDir
+     /*   val fileDir = context.filesDir
 
-        Log.d("Cache File Dir: ",fileDir.absolutePath)
+        Log.d("File Dir: ",fileDir.absolutePath)
         val cacheDir = context.cacheDir
         Log.d("Cache File Dir: ",cacheDir.absolutePath)
 
+*/
 
+        try {
+            val bitmap = Bitmap.createBitmap(view.width, view.height, Bitmap.Config.ARGB_8888)
+            val canvas = Canvas(bitmap)
+            view.draw(canvas)
+            val cacheDir = view.context.cacheDir
+            // creer un fichier temporaire
+            val tempImage = File.createTempFile("tempfile", ".png", cacheDir)
+            val stream = FileOutputStream(tempImage)
+            bitmap.compress(Bitmap.CompressFormat.PNG, 70, stream)
+            stream.flush()
+            stream.close()
+
+            val emailIntent = Intent(Intent.ACTION_SEND)
+            emailIntent.type = "image/*"
+            emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Capture d'écran")
+            emailIntent.putExtra(Intent.EXTRA_TEXT, "Voici la capture d'écran de mon réseau")
+            //val uri = Uri.fromFile(imagePath)
+            //Log.d("Error Ex URI: ", uri.toString())
+           // emailIntent.putExtra(Intent.EXTRA_STREAM, uri)
+           // emailIntent.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(tempImage))
+            view.context.startActivity(
+                Intent.createChooser(
+                    emailIntent,
+                    "Choisissez une application"
+                )
+            )
+
+
+        } catch (e: Exception) {
+            Log.d("Error Ex: ", e.message.toString())
+            e.printStackTrace()
+        }
+    }
+
+    // envoyer un mail avec une capture d'écran
+    fun saveView(view: View){
+        val bitmap = Bitmap.createBitmap(view.width, view.height, Bitmap.Config.ARGB_8888)
+        val canvas = Canvas(bitmap)
+        view.draw(canvas)
+        val file = File(view.context.getExternalFilesDir(Environment.DIRECTORY_DCIM), "reseau.jpg")
+        val out = FileOutputStream(file)
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 70, out)
+        out.flush()
+        out.close()
+
+        val contentUri = FileProvider.getUriForFile(view.context, "${view.context.packageName}.fileprovider", file) // fr.istic.mob.networkKS.fileprovider
+
+        // envoyer le mail
+        val emailIntent = Intent(Intent.ACTION_SEND)
+        emailIntent.type = "image/*"
+        emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Capture d'écran")
+        emailIntent.putExtra(Intent.EXTRA_TEXT, "Voici la capture d'écran de mon réseau")
+        emailIntent.putExtra(Intent.EXTRA_STREAM, contentUri)
+        emailIntent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION)
+        view.context.startActivity(
+            Intent.createChooser(
+                emailIntent,
+                "Choisissez une application"
+            )
+        )
+
+    }
+
+    fun saveScreenshot(view :View,context:Context){
         val bitmap = Bitmap.createBitmap(view.width, view.height, Bitmap.Config.ARGB_8888)
         val canvas = Canvas(bitmap)
         view.draw(canvas)
         if (Utils().createScreenshotDirectory()) {
             val externalStorage = Environment.getExternalStorageDirectory()
-            val dir = File(externalStorage.absolutePath, "ScreenShots")
-
-
-            val fileDirectory = File(dir.absolutePath)
-            Log.d("Cache File Dir: ", fileDirectory.absolutePath)
-
-
-            try {
-                val imagePath = File(fileDirectory, "screenshot.png")
-                val stream = FileOutputStream(imagePath)
-                bitmap.compress(Bitmap.CompressFormat.PNG, 100, stream)
-                stream.flush()
-                stream.close()
-
-                val emailIntent = Intent(Intent.ACTION_SEND)
-                emailIntent.type = "image/*"
-                emailIntent.putExtra(Intent.EXTRA_SUBJECT, "Capture d'écran")
-                emailIntent.putExtra(Intent.EXTRA_TEXT, "Voici la capture d'écran de mon réseau")
-                val uri = Uri.fromFile(imagePath)
-                Log.d("Error Ex URI: ", uri.toString())
-                emailIntent.putExtra(Intent.EXTRA_STREAM, uri)
-                view.context.startActivity(
-                    Intent.createChooser(
-                        emailIntent,
-                        "Choisissez une application"
-                    )
-                )
-
-
-            } catch (e: Exception) {
-                Log.d("Error Ex: ", e.message.toString())
-                e.printStackTrace()
-            }
-        }
+            val dir = File(externalStorage.absolutePath, "graph")
     }
+    }
+
+
 
     // demander l'autorisation d'acces au stockage externe
     fun askPermission(context: Context){

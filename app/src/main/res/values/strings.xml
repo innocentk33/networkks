@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Network Kacou/Seh</string>
+    <string name="app_name">Reseau Kacou/Seh</string>
     <string name="mode_add">Mode ajout</string>
     <string name="mode_connect">Mode connexion</string>
     <string name="mode_edit">Modification d’objets/connexions</string>

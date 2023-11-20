@@ -58,20 +58,9 @@ class DrawZone(context: Context) : View(context), GestureDetector.OnGestureListe
             }
             // Dessiner les connexions existantes
             for (connexion in graph.connexions) {
-                // Dessiner la connexion avec drawLine
-                /*canvas.drawLine(
-
-                    connexion.startConnexionX, connexion.startConnexionY,
-                   connexion.endConnexionX, connexion.endConnexionY,
-                    connexion.connectionPaint
-                )*/
                 // Dessiner la connexion avec drawPath
                 canvas.drawPath(connexion.path, connexion.connectionPaint)
-                // Dessiner le label centrer
-      /*          val labelPositionX = (connexion.startConnexionX + connexion.endConnexionX) / 2
-                val labelPositionY = (connexion.startConnexionY + connexion.endConnexionY) / 2*/
                 canvas.drawText(connexion.connexionLabel, connexion.labelPositionX, connexion.labelPositionY, connexion.labelStyle)
-                //canvas.drawText()
             }
             if (isCreatingConnection) {
                 // Dessinez la connexion temporaire

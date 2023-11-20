@@ -77,8 +77,8 @@ class MainActivity : AppCompatActivity() {
             }
             R.id.sendMail->{
                 // envoyer la capture d'écran par mail
-               // drawZone.sendDrawZoneByMail(drawZone)
-                Utils().sendMail(drawZone,this)
+                val drawView = findViewById<FrameLayout>(R.id.drawZone)
+                Utils().saveView(drawView)
                 true
             }
 
