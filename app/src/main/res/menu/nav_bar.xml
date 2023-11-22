@@ -12,6 +12,7 @@
         android:title="@string/mode_edit" />
     <item android:id="@+id/saveNetwork" android:title="@string/save_network"/>
     <item android:id="@+id/viewSavedNetwork" android:title="@string/view_saved_network"/>
+    <item android:id="@+id/viewImportSavedNetwork" android:title="Importer un réseau sauvegardé"/>
     <item android:id="@+id/sendMail" android:title="@string/send_mail"/>
     <item android:id="@+id/choseBackground" android:title="@string/chosePlan"/>
 </menu>

@@ -11,6 +11,7 @@
     <string name="alerteDialog_cancel">Annuler</string>
     <string name="save_network">Sauvegarder le réseau</string>
     <string name="view_saved_network">Voir le réseau sauvegardé</string>
+    <string name="view_import_saved_network">Importer un réseau sauvegardé</string>
     <string name="delete_saved_network">Supprimer les réseaux sauvegardés</string>
     <string name="delete_saved_network_confirm">Supprimer</string>
     <string name="send_mail">Envoyer par mail</string>
