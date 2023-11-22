@@ -357,7 +357,6 @@ class DrawZone(context: Context) : View(context), GestureDetector.OnGestureListe
     }
 
     fun saveGraph() {
-
         if (graph.objets.isNotEmpty()) {
             Log.d("Graph", graph.toString())
             val gson = Gson()
@@ -379,11 +378,37 @@ class DrawZone(context: Context) : View(context), GestureDetector.OnGestureListe
                 val gson = Gson()
                 val graphRestored = gson.fromJson(graphJson, Graph::class.java) // convertir le json en objet graph
                 for (connexion in graphRestored.connexions) {
+                    connexion.connectionPaint = Paint().apply {
+                        color = Color.BLUE
+                        style = Paint.Style.STROKE
+                        strokeWidth = Connexion.smallStroke
+                    }
                     connexion.path = Path()
                     connexion.path.apply {
                         reset()
                         moveTo(connexion.startConnexionX, connexion.startConnexionY)
                         lineTo(connexion.endConnexionX, connexion.endConnexionY)
+                    }
+                    connexion.labelStyle.apply {
+                        Paint.Style.FILL
+                        Color.BLACK
+                        textSize = 30f
+                        typeface = android.graphics.Typeface.DEFAULT_BOLD
+                        isAntiAlias = true
+                        textAlign = Paint.Align.CENTER
+                    }
+
+                }
+                for (objet in graphRestored.objets){
+                    objet.rect = RectF(
+                        objet.position.x,
+                        objet.position.y,
+                        objet.position.x + Objet.rectWidth,
+                        objet.position.y + Objet.rectHeight
+                    )
+                    objet.paint = Paint().apply {
+                        color = objet.color
+                        style = Paint.Style.FILL
                     }
                 }
                 this.graph = graphRestored // mettre à jour le graph de la zone de dessin
