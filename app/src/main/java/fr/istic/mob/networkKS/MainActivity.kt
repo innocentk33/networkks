@@ -16,35 +16,16 @@ class MainActivity : AppCompatActivity() {
 
 
     private lateinit var drawZone : DrawZone //moteur de dessin
+    private lateinit var drawView : FrameLayout //zone de dessin
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar) //ajout de la toolbar
-        val drawView = findViewById<FrameLayout>(R.id.drawZone)
-        val chosePlanLayout = LayoutInflater.from(this).inflate(R.layout.chose_plan, null)
-        val plan0 = chosePlanLayout.findViewById<RadioButton>(R.id.plan)
-        val plan1 = chosePlanLayout.findViewById<RadioButton>(R.id.plan1)
-        val plan2 = chosePlanLayout.findViewById<RadioButton>(R.id.plan2)
-        val plan3 = chosePlanLayout.findViewById<RadioButton>(R.id.plan3)
+        drawView = findViewById<FrameLayout>(R.id.drawZone)
         drawView.background = AppCompatResources.getDrawable(this, R.drawable.plan) //ajout du plan
-        val alertDialog = AlertDialog.Builder(this)
-        alertDialog.setTitle(R.string.chosePlan)
-        alertDialog.setView(chosePlanLayout)
-        alertDialog.setPositiveButton(R.string.alerteDialog_confirm) { _, _ ->
-            if (plan1.isChecked) {
-                drawView.background = AppCompatResources.getDrawable(this, R.drawable.plan1)
-            } else if (plan2.isChecked) {
-                drawView.background = AppCompatResources.getDrawable(this, R.drawable.plan)
-            } else if (plan3.isChecked) {
-                drawView.background = AppCompatResources.getDrawable(this, R.drawable.plan3)
-            }
-
-        }
-        alertDialog.setNegativeButton("Cancel") { dialog, which ->
-            dialog.cancel()
-        }
-        alertDialog.show()
+        //choix du plan
+        choseBackground()
         this.drawZone = DrawZone(this)
         this.drawZone.mode = Mode.ADD
         drawView.addView(this.drawZone)
@@ -102,9 +83,39 @@ class MainActivity : AppCompatActivity() {
                 Utils().sendMail(drawView)
                 true
             }
+            R.id.choseBackground->{
+                choseBackground()
+                true
+            }
 
             else -> super.onOptionsItemSelected(item)
         }
     }
+// peut mieux faire mais je n'ai pas eu le temps de faire mieux
+   private fun choseBackground (){
+    val chosePlanLayout = LayoutInflater.from(this).inflate(R.layout.chose_plan, null)
+    val plan0 = chosePlanLayout.findViewById<RadioButton>(R.id.plan)
+    val plan1 = chosePlanLayout.findViewById<RadioButton>(R.id.plan1)
+    val plan2 = chosePlanLayout.findViewById<RadioButton>(R.id.plan2)
+    val plan3 = chosePlanLayout.findViewById<RadioButton>(R.id.plan3)
+    val alertDialog = AlertDialog.Builder(this)
+    alertDialog.setTitle(R.string.chosePlan)
+    alertDialog.setView(chosePlanLayout)
+    alertDialog.setPositiveButton(R.string.alerteDialog_confirm) { _, _ ->
+        if (plan0.isChecked) {
+            drawView.background = AppCompatResources.getDrawable(this, R.drawable.plan)
+        } else if (plan1.isChecked) {
+            drawView.background = AppCompatResources.getDrawable(this, R.drawable.plan1)
+        } else if (plan2.isChecked) {
+            drawView.background = AppCompatResources.getDrawable(this, R.drawable.plan2)
+        } else if (plan3.isChecked) {
+            drawView.background = AppCompatResources.getDrawable(this, R.drawable.plan3)
+        }
 
+    }
+    alertDialog.setNegativeButton("Cancel") { dialog, which ->
+        dialog.cancel()
+    }
+    alertDialog.show()
+    }
 }
