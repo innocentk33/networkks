@@ -52,5 +52,6 @@
     <string name="Plan1">Plan 1</string>
     <string name="Plan2">Plan 2</string>
     <string name="Plan3">Plan 3</string>
+    <string name="ListeOfSavedNetwork">List of saved networks</string>
 
 </resources>
