@@ -392,46 +392,7 @@ class DrawZone(context: Context) : View(context), GestureDetector.OnGestureListe
         if (sharedPreferences != null) {
             val graphJson = sharedPreferences.getString("graph", null)
             if (graphJson != null) {
-                val gson = Gson()
-                val graphRestored = gson.fromJson(graphJson, Graph::class.java) // convertir le json en objet graph
-                for (connexion in graphRestored.connexions) {
-                    connexion.connectionPaint = Paint().apply {
-                        color = Color.BLUE
-                        style = Paint.Style.STROKE
-                        strokeWidth = Connexion.smallStroke
-                    }
-                    connexion.path = Path()
-                    connexion.path.apply {
-                        reset()
-                        moveTo(connexion.startConnexionX, connexion.startConnexionY)
-                        lineTo(connexion.endConnexionX, connexion.endConnexionY)
-                    }
-                    connexion.labelStyle.apply {
-                        Paint.Style.FILL
-                        Color.BLACK
-                        textSize = 30f
-                        typeface = android.graphics.Typeface.DEFAULT_BOLD
-                        isAntiAlias = true
-                        textAlign = Paint.Align.CENTER
-                    }
-
-                }
-                for (objet in graphRestored.objets){
-                    objet.rect = RectF(
-                        objet.position.x,
-                        objet.position.y,
-                        objet.position.x + Objet.rectWidth,
-                        objet.position.y + Objet.rectHeight
-                    )
-                    objet.paint = Paint().apply {
-                        color = objet.color
-                        style = Paint.Style.FILL
-                    }
-                }
-                this.graph = graphRestored // mettre à jour le graph de la zone de dessin
-                Log.d("Graph", graph.toString())
-                invalidate() // redessiner la zone de dessin
-
+                drawNetwork(graphJson)
         }
         } else {
             Toast.makeText(context, R.string.no_saved_network, Toast.LENGTH_SHORT).show()
@@ -439,31 +400,62 @@ class DrawZone(context: Context) : View(context), GestureDetector.OnGestureListe
 
     }
     fun viewImportNetwork() {
-        val sharedPreferences = context.getSharedPreferences("graph", Context.MODE_PRIVATE)
-        val graphJson = sharedPreferences.getString("graph", null)
-        try {
-            if (graphJson != null) {
-                val gson = Gson()
-                val graphRestored = gson.fromJson(graphJson, Graph::class.java) // convertir le json en objet graph
-                for (connexion in graphRestored.connexions) {
-                    connexion.path = Path()
-                    connexion.path.apply {
-                        reset()
-                        moveTo(connexion.startConnexionX, connexion.startConnexionY)
-                        lineTo(connexion.endConnexionX, connexion.endConnexionY)
-                    }
-                }
-                this.graph = graphRestored // mettre à jour le graph de la zone de dessin
-                Log.d("Graph", graph.toString())
-                invalidate() // redessiner la zone de dessin
-            }
-        }catch (e : Exception){
-            Toast.makeText(context, "Le réseau selectionné est erroné", Toast.LENGTH_SHORT).show()
-        }
+        val lisView = LayoutInflater.from(context).inflate(R.layout.chose_graphe, null)
+        val alertDialog = AlertDialog.Builder(context)
+            .setTitle(R.string.alerteDialog_edit_menu_title)
+            .setView(lisView)
+            .setPositiveButton(R.string.alerteDialog_confirm) { dialog, which ->
 
+            }
+        alertDialog.setNegativeButton(R.string.alerteDialog_cancel) { dialog, which ->
+            dialog.cancel()
+        }
+        alertDialog.show()
     }
 
 
+    private fun drawNetwork(graphJson: String){
+
+        val gson = Gson()
+        val graphRestored = gson.fromJson(graphJson, Graph::class.java) // convertir le json en objet graph
+        for (connexion in graphRestored.connexions) {
+            connexion.connectionPaint = Paint().apply {
+                color = Color.BLUE
+                style = Paint.Style.STROKE
+                strokeWidth = Connexion.smallStroke
+            }
+            connexion.path = Path()
+            connexion.path.apply {
+                reset()
+                moveTo(connexion.startConnexionX, connexion.startConnexionY)
+                lineTo(connexion.endConnexionX, connexion.endConnexionY)
+            }
+            connexion.labelStyle.apply {
+                Paint.Style.FILL
+                Color.BLACK
+                textSize = 30f
+                typeface = android.graphics.Typeface.DEFAULT_BOLD
+                isAntiAlias = true
+                textAlign = Paint.Align.CENTER
+            }
+
+        }
+        for (objet in graphRestored.objets){
+            objet.rect = RectF(
+                objet.position.x,
+                objet.position.y,
+                objet.position.x + Objet.rectWidth,
+                objet.position.y + Objet.rectHeight
+            )
+            objet.paint = Paint().apply {
+                color = objet.color
+                style = Paint.Style.FILL
+            }
+        }
+        this.graph = graphRestored // mettre à jour le graph de la zone de dessin
+        Log.d("Graph", graph.toString())
+        invalidate() // redessiner la zone de dessin
+    }
 
 
 

@@ -18,26 +18,26 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
         <RadioButton
-            android:id="@+id/plan"
+            android:id="@+id/graphe0"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/Plan"
             android:textStyle="bold" />
         <RadioButton
-            android:id="@+id/plan1"
+            android:id="@+id/graphe1"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/Plan1"
             android:textStyle="bold" />
         <RadioButton
-            android:id="@+id/plan2"
+            android:id="@+id/graphe2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/Plan2"
             android:textStyle="bold" />
 
         <RadioButton
-            android:id="@+id/plan3"
+            android:id="@+id/graphe3"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="@string/Plan3"

@@ -101,10 +101,10 @@ class MainActivity : AppCompatActivity() {
 // peut mieux faire mais je n'ai pas eu le temps de faire mieux
    private fun choseBackground (){
     val chosePlanLayout = LayoutInflater.from(this).inflate(R.layout.chose_plan, null)
-    val plan0 = chosePlanLayout.findViewById<RadioButton>(R.id.plan)
-    val plan1 = chosePlanLayout.findViewById<RadioButton>(R.id.plan1)
-    val plan2 = chosePlanLayout.findViewById<RadioButton>(R.id.plan2)
-    val plan3 = chosePlanLayout.findViewById<RadioButton>(R.id.plan3)
+    val plan0 = chosePlanLayout.findViewById<RadioButton>(R.id.graphe0)
+    val plan1 = chosePlanLayout.findViewById<RadioButton>(R.id.graphe1)
+    val plan2 = chosePlanLayout.findViewById<RadioButton>(R.id.graphe2)
+    val plan3 = chosePlanLayout.findViewById<RadioButton>(R.id.graphe3)
     val alertDialog = AlertDialog.Builder(this)
     alertDialog.setTitle(R.string.chosePlan)
     alertDialog.setView(chosePlanLayout)
