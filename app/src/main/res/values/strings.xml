@@ -46,6 +46,12 @@
     <string name="connexionTaille_Grande">Grande</string>
     <string name="connexionTaille">Taille de la connexion</string>
     <string name="no_saved_network">Aucun réseau sauvegardé</string>
+    <string name="chosePlan">Choisir un plan</string>
+    <string name="Plan">Defaut</string>
+    <string name="Plan1">Plan 1</string>
+    <string name="Plan2">Plan 2</string>
+    <string name="Plan3">Plan 3</string>
+
 
 </resources>
 

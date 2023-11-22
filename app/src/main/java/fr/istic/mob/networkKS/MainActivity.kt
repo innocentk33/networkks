@@ -1,18 +1,15 @@
 package fr.istic.mob.networkKS
 import android.os.Bundle
-import android.view.Gravity
+import android.view.LayoutInflater
 import android.view.Menu
 import android.view.MenuItem
-import android.view.View
-import android.widget.EditText
 import android.widget.FrameLayout
-import android.widget.PopupMenu
+import android.widget.RadioButton
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.widget.Toolbar
-import fr.istic.mob.networkKS.models.Objet
 import fr.istic.mob.networkKS.utils.Utils
 
 class MainActivity : AppCompatActivity() {
@@ -25,7 +22,29 @@ class MainActivity : AppCompatActivity() {
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar) //ajout de la toolbar
         val drawView = findViewById<FrameLayout>(R.id.drawZone)
-        //drawView.background = AppCompatResources.getDrawable(this, R.drawable.plan) //ajout du plan
+        val chosePlanLayout = LayoutInflater.from(this).inflate(R.layout.chose_plan, null)
+        val plan0 = chosePlanLayout.findViewById<RadioButton>(R.id.plan)
+        val plan1 = chosePlanLayout.findViewById<RadioButton>(R.id.plan1)
+        val plan2 = chosePlanLayout.findViewById<RadioButton>(R.id.plan2)
+        val plan3 = chosePlanLayout.findViewById<RadioButton>(R.id.plan3)
+        drawView.background = AppCompatResources.getDrawable(this, R.drawable.plan) //ajout du plan
+        val alertDialog = AlertDialog.Builder(this)
+        alertDialog.setTitle(R.string.chosePlan)
+        alertDialog.setView(chosePlanLayout)
+        alertDialog.setPositiveButton(R.string.alerteDialog_confirm) { _, _ ->
+            if (plan1.isChecked) {
+                drawView.background = AppCompatResources.getDrawable(this, R.drawable.plan1)
+            } else if (plan2.isChecked) {
+                drawView.background = AppCompatResources.getDrawable(this, R.drawable.plan)
+            } else if (plan3.isChecked) {
+                drawView.background = AppCompatResources.getDrawable(this, R.drawable.plan3)
+            }
+
+        }
+        alertDialog.setNegativeButton("Cancel") { dialog, which ->
+            dialog.cancel()
+        }
+        alertDialog.show()
         this.drawZone = DrawZone(this)
         this.drawZone.mode = Mode.ADD
         drawView.addView(this.drawZone)

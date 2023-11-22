@@ -46,5 +46,10 @@
     <string name="connexionTaille">Connection size</string>
     <string name="checkForDeleteConnection">"Check to delete connection"</string>
     <string name="no_saved_network">No saved network</string>
+    <string name="chosePlan">Choose a plan</string>
+    <string name="Plan">Default</string>
+    <string name="Plan1">Plan 1</string>
+    <string name="Plan2">Plan 2</string>
+    <string name="Plan3">Plan 3</string>
 
 </resources>
