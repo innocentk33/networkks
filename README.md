@@ -41,3 +41,6 @@ Pour charger un réseau, il faut cliquer sur le bouton **Voir le réseau sauvega
 
 ### Comment envoyer le réseau par mail
 Pour envoyer le réseau par mail, il faut cliquer sur le bouton **Envoyer par mail** dans le menu de l'application.
+
+### Comment changer le plan de travail
+Pour changer le plan de travail, il faut cliquer sur le bouton **Choisir un Plan** dans le menu de l'application.
