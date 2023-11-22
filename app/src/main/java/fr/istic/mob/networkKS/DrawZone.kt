@@ -395,7 +395,7 @@ class DrawZone(context: Context) : View(context), GestureDetector.OnGestureListe
         }
 
     }
-    fun viewShowNetwork() {
+    fun viewImportNetwork() {
         val sharedPreferences = context.getSharedPreferences("graph", Context.MODE_PRIVATE)
         val graphJson = sharedPreferences.getString("graph", null)
         try {

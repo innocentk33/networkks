@@ -75,6 +75,13 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(this,R.string.view_saved_network, Toast.LENGTH_SHORT).show()
                 true
             }
+
+            R.id.viewImportSavedNetwork->{
+                drawZone.viewImportNetwork()
+                Toast.makeText(this,"Importer un réseau sauvegardé", Toast.LENGTH_SHORT).show()
+                true
+            }
+
             R.id.sendMail->{
                 // envoyer la capture d'écran par mail
                 val drawView = findViewById<FrameLayout>(R.id.drawZone)
