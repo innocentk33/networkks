@@ -395,6 +395,35 @@ class DrawZone(context: Context) : View(context), GestureDetector.OnGestureListe
         }
 
     }
+    fun viewShowNetwork() {
+        val sharedPreferences = context.getSharedPreferences("graph", Context.MODE_PRIVATE)
+        val graphJson = sharedPreferences.getString("graph", null)
+        try {
+            if (graphJson != null) {
+                val gson = Gson()
+                val graphRestored = gson.fromJson(graphJson, Graph::class.java) // convertir le json en objet graph
+                for (connexion in graphRestored.connexions) {
+                    connexion.path = Path()
+                    connexion.path.apply {
+                        reset()
+                        moveTo(connexion.startConnexionX, connexion.startConnexionY)
+                        lineTo(connexion.endConnexionX, connexion.endConnexionY)
+                    }
+                }
+                this.graph = graphRestored // mettre à jour le graph de la zone de dessin
+                Log.d("Graph", graph.toString())
+                invalidate() // redessiner la zone de dessin
+            }
+        }catch (e : Exception){
+            Toast.makeText(context, "Le réseau selectionné est erroné", Toast.LENGTH_SHORT).show()
+        }
+
+    }
+
+
+
+
+
 
     override fun createContextMenu(menu: ContextMenu?) {
         super.createContextMenu(menu)

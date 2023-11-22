@@ -11,6 +11,7 @@
     <string name="alerteDialog_cancel">Cancel</string>
     <string name="save_network">Save network</string>
     <string name="view_saved_network">View saved network</string>
+    <string name="view_import_saved_network">Import a saved network</string>
     <string name="delete_saved_network">Delete saved networks</string>
     <string name="delete_saved_network_confirm">Delete</string>
     <string name="send_mail">Send by mail</string>
