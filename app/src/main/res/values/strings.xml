@@ -45,6 +45,7 @@
     <string name="connexionTaille_Moyenne">Moyenne</string>
     <string name="connexionTaille_Grande">Grande</string>
     <string name="connexionTaille">Taille de la connexion</string>
+    <string name="no_saved_network">Aucun réseau sauvegardé</string>
 
 </resources>
 

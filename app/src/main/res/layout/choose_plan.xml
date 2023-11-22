@@ -1,0 +1,109 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:backgroundTint="#1A000000"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/choseColorTitle"
+        android:gravity="start"
+        />
+    <RadioGroup
+        android:id="@+id/radioGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <RadioButton
+            android:id="@+id/radioButtonRed"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/red"
+            android:textColor="@color/red"
+            android:textStyle="bold" />
+        <RadioButton
+            android:id="@+id/radioButtonGreen"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/green"
+            android:textColor="@color/green"
+            android:textStyle="bold" />
+        <RadioButton
+            android:id="@+id/radioButtonBlue"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/blue"
+            android:textColor="@color/light_blue_600"
+            android:textStyle="bold" />
+
+        <RadioButton
+            android:id="@+id/radioButtonYellow"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/yellow"
+            android:textColor="@color/orange"
+            android:textStyle="bold" />
+        <RadioButton
+            android:id="@+id/radioButtonMagenta"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/magenta"
+            android:textColor="@color/magenta"
+            android:textStyle="bold" />
+    </RadioGroup>
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/connexionTaille"
+        android:gravity="start"
+        />
+    <RadioGroup
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
+        <RadioButton
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/radioConnexionTaille_Petite"
+            android:text="@string/connexionTaille_Petite"
+            android:textColor="@color/white"
+            />
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/radioConnexionTaille_Moyenne"
+            android:text="@string/connexionTaille_Moyenne"
+            android:textColor="@color/white"
+            />
+        <RadioButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/radioConnexionTaille_Grande"
+            android:text="@string/connexionTaille_Grande"
+            android:textColor="@color/white"
+            />
+    </RadioGroup>
+
+    <TextView
+        android:id="@+id/textViewCheckForDelete"
+        android:layout_marginTop="10dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/checkForDeleteConnection"
+        android:gravity="start"
+        android:textColor="@color/white"
+        />
+    <RadioButton
+        android:id="@+id/radioButtonDelete"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/delete_connection"
+        android:textStyle="bold"
+        android:textColor="@color/white"
+        />
+
+</LinearLayout>

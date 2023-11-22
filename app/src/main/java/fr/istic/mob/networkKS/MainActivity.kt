@@ -10,6 +10,7 @@ import android.widget.PopupMenu
 import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.content.res.AppCompatResources
 import androidx.appcompat.widget.Toolbar
 import fr.istic.mob.networkKS.models.Objet
 import fr.istic.mob.networkKS.utils.Utils
@@ -24,6 +25,7 @@ class MainActivity : AppCompatActivity() {
         val toolbar = findViewById<Toolbar>(R.id.toolbar)
         setSupportActionBar(toolbar) //ajout de la toolbar
         val drawView = findViewById<FrameLayout>(R.id.drawZone)
+        //drawView.background = AppCompatResources.getDrawable(this, R.drawable.plan) //ajout du plan
         this.drawZone = DrawZone(this)
         this.drawZone.mode = Mode.ADD
         drawView.addView(this.drawZone)
