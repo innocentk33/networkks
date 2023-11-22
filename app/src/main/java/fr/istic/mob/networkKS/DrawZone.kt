@@ -60,6 +60,9 @@ class DrawZone(context: Context) : View(context), GestureDetector.OnGestureListe
             for (connexion in graph.connexions) {
                 // Dessiner la connexion avec drawPath
                 canvas.drawPath(connexion.path, connexion.connectionPaint)
+                // centrer le label
+               // val labelPositionX = (connexion.startConnexionX + connexion.endConnexionX) / 2
+              //  val labelPositionY = (connexion.startConnexionY + connexion.endConnexionY) / 2
                 canvas.drawText(connexion.connexionLabel, connexion.labelPositionX, connexion.labelPositionY, connexion.labelStyle)
             }
             if (isCreatingConnection) {
@@ -206,6 +209,10 @@ class DrawZone(context: Context) : View(context), GestureDetector.OnGestureListe
                                             lineTo(connexion.endConnexionX, connexion.endConnexionY)
                                         }
                                     }
+                                    graph.connexions[graph.connexions.indexOf(connexion)].path = connexion.path
+                                    graph.connexions[graph.connexions.indexOf(connexion)].labelPositionX = connexion.labelPositionX
+                                    graph.connexions[graph.connexions.indexOf(connexion)].labelPositionY = connexion.labelPositionY
+                                    graph.connexions[graph.connexions.indexOf(connexion)].labelPointF = connexion.labelPointF
                                 }
                                 invalidate()
                             }
@@ -236,6 +243,10 @@ class DrawZone(context: Context) : View(context), GestureDetector.OnGestureListe
                        // draggingObject = null
                         findObjet = false
                         startObject = null
+                        isDragging = false
+                        isDragging = false
+                        findConnexion = false
+
                         return true
                     }
 
@@ -363,21 +374,26 @@ class DrawZone(context: Context) : View(context), GestureDetector.OnGestureListe
     fun viewSavedNetwork() {
         val sharedPreferences = context.getSharedPreferences("graph", Context.MODE_PRIVATE)
         val graphJson = sharedPreferences.getString("graph", null)
-        if (graphJson != null) {
-            val gson = Gson()
-            val graphRestored = gson.fromJson(graphJson, Graph::class.java) // convertir le json en objet graph
-            for (connexion in graphRestored.connexions) {
-                connexion.path = Path()
-                connexion.path.apply {
-                    reset()
-                    moveTo(connexion.startConnexionX, connexion.startConnexionY)
-                    lineTo(connexion.endConnexionX, connexion.endConnexionY)
+        try {
+            if (graphJson != null) {
+                val gson = Gson()
+                val graphRestored = gson.fromJson(graphJson, Graph::class.java) // convertir le json en objet graph
+                for (connexion in graphRestored.connexions) {
+                    connexion.path = Path()
+                    connexion.path.apply {
+                        reset()
+                        moveTo(connexion.startConnexionX, connexion.startConnexionY)
+                        lineTo(connexion.endConnexionX, connexion.endConnexionY)
+                    }
                 }
+                this.graph = graphRestored // mettre à jour le graph de la zone de dessin
+                Log.d("Graph", graph.toString())
+                invalidate() // redessiner la zone de dessin
             }
-            this.graph = graphRestored // mettre à jour le graph de la zone de dessin
-            Log.d("Graph", graph.toString())
-            invalidate() // redessiner la zone de dessin
+        }catch (e : Exception){
+            Toast.makeText(context, "Le réseau selectionné est erroné", Toast.LENGTH_SHORT).show()
         }
+
     }
 
     override fun createContextMenu(menu: ContextMenu?) {
