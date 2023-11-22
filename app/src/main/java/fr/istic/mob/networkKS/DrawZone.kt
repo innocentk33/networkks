@@ -371,6 +371,23 @@ class DrawZone(context: Context) : View(context), GestureDetector.OnGestureListe
         }
     }
 
+    fun savelistGraph() {
+
+        if (graph.objets.isNotEmpty()) {
+            Log.d("Graph", graph.toString())
+            val gson = Gson()
+            val graphJson = gson.toJson(graph)
+            Log.d("GraphJson", graphJson)
+            val sharedPreferences = context.getSharedPreferences("graph", Context.MODE_PRIVATE)
+            val editor = sharedPreferences.edit()
+            editor.putString("graph", graphJson)
+            editor.apply()
+            Toast.makeText(context, "Votre reseau a bien été enregistré", Toast.LENGTH_SHORT).show()
+        }
+    }
+
+
+
     fun viewSavedNetwork() {
         val sharedPreferences = context.getSharedPreferences("graph", Context.MODE_PRIVATE)
         val graphJson = sharedPreferences.getString("graph", null)
